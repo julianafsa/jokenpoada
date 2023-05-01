@@ -12,10 +12,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -67,23 +65,6 @@ class PlayerServiceTests {
     	verify(playerRepository, times(1)).existsByUsername(anyString());
 	}
 	
-	public void createPlayer(PlayerDto playerDto) throws DataConflictException {
-		if (playerRepository.existsByUsername(playerDto.getUsername()))
-			throw new DataConflictException("O jogador já está cadastrado!");
-
-		Player player = new Player();
-		player.setName(playerDto.getName());
-		player.setUsername(playerDto.getUsername());
-		player.setPassword(passwordEncoder.encode(playerDto.getPassword()));
-
-		Set<Role> roles = new HashSet<>();
-		Role role = roleRepository.findByName("ROLE_USER").get();
-		roles.add(role);
-		player.setRoles(roles);
-		playerRepository.save(player);
-		// log.info("Jogador registrado com sucesso!");
-	}
-
 	@Test
 	void testFindPlayers() throws DataNotFoundException {
     	
