@@ -25,10 +25,10 @@ public class GameController implements GameControllerDocs {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> newGame(@RequestBody GameDto gameDto) throws BadRequestException,
+    public ResponseEntity<Game> newGame(@RequestBody GameDto gameDto) throws BadRequestException,
             DataNotFoundException {
-        gameService.newGame(gameDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Game savedGame = gameService.newGame(gameDto);
+        return new ResponseEntity<Game>(savedGame, HttpStatus.CREATED);
     }
 
     @PostMapping("/move")

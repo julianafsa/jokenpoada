@@ -27,7 +27,7 @@ public interface GameControllerDocs {
             @ApiResponse(responseCode = "400", description = "O jogo possui menos que dois jogadores!", content = @Content),
             @ApiResponse(responseCode = "404", description = "O jogador não está cadastrado!", content = @Content)
     })
-    ResponseEntity<Void> newGame(@RequestBody GameDto gameDto) throws BadRequestException,
+    ResponseEntity<Game> newGame(@RequestBody GameDto gameDto) throws BadRequestException,
             DataNotFoundException;
 
     @Operation(summary = "Registro de uma jogada do jogador logado", security = @SecurityRequirement(name = "bearerAuth"))

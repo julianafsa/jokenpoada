@@ -43,7 +43,7 @@ public class GameService {
         this.playerRepository = playerRepository;
     }
 
-    public void newGame(GameDto gameDto) throws BadRequestException, DataNotFoundException {
+    public Game newGame(GameDto gameDto) throws BadRequestException, DataNotFoundException {
         Player currentPlayer = verifyCurrentPlayer();
         Game game = new Game();
         game.setCreator(currentPlayer);
@@ -61,6 +61,8 @@ public class GameService {
             playerMoveRepository.save(playerMove);
         }
         log.info("Jogo iniciado com sucesso!");
+
+        return savedGame;
     }
 
     public ResultDto insertPlayerMove(GameMoveDto gameMove) throws DataNotFoundException, BadRequestException, DataConflictException {

@@ -19,7 +19,7 @@ public class MoveService {
         this.moveRepository = moveRepository;
     }
 
-    public void createMove(MoveDto moveDto) throws DataConflictException, BadRequestException {
+    public Move createMove(MoveDto moveDto) throws DataConflictException, BadRequestException {
         if (moveRepository.existsByMove(moveDto.getMove()))
             throw new DataConflictException("A jogada já está cadastrada!");
         if (!moveDto.getMove().equalsIgnoreCase("Spock") &&
@@ -37,6 +37,7 @@ public class MoveService {
         Move move = new Move();
         move.setMove(moveDto.getMove());
         moveRepository.save(move);
+        return move;
     }
 
     public List<Move> findMoves() throws DataNotFoundException {

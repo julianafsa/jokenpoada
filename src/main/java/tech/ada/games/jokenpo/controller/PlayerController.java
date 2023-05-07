@@ -22,9 +22,9 @@ public class PlayerController implements PlayerControllerDocs {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createPlayer(@RequestBody PlayerDto player) throws DataConflictException {
-        playerService.createPlayer(player);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Player> createPlayer(@RequestBody PlayerDto player) throws DataConflictException {
+        var playerCreated = playerService.createPlayer(player);
+        return new ResponseEntity<Player>(playerCreated, null, HttpStatus.CREATED);
     }
 
     @GetMapping("")

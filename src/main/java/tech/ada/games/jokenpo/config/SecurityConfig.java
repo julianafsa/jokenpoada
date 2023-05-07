@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tech.ada.games.jokenpo.security.JwtAuthenticationEntryPoint;
@@ -46,17 +47,16 @@ public class SecurityConfig {
         http
                 .cors().and().csrf().disable().headers().frameOptions().disable().and()
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/v1/jokenpo/login").permitAll()
                         .requestMatchers("/api/v1/jokenpo/player/create").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/swagger-resources/**").permitAll()
                         .requestMatchers("/swagger-ui.html").permitAll()
-                        .anyRequest().authenticated()
-                ).exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(authenticationEntryPoint)
-                ).sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .anyRequest().authenticated())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -18,7 +18,7 @@ public class Runner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Role role = roleRepository.findByName("ROLE_USER").orElseGet(() -> {
+        roleRepository.findByName("ROLE_USER").orElseGet(() -> {
             Role newRole = new Role();
             newRole.setName("ROLE_USER");
             Role savedRole = roleRepository.save(newRole);

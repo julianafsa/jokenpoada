@@ -34,7 +34,7 @@ public class PlayerService {
     }
 
 
-    public void createPlayer(PlayerDto playerDto) throws DataConflictException {
+    public Player createPlayer(PlayerDto playerDto) throws DataConflictException {
         if (playerRepository.existsByUsername(playerDto.getUsername()))
             throw new DataConflictException("O jogador já está cadastrado!");
 
@@ -49,6 +49,8 @@ public class PlayerService {
         player.setRoles(roles);
         playerRepository.save(player);
         log.info("Jogador registrado com sucesso!");
+
+        return player;
     }
 
     public List<Player> findPlayers() throws DataNotFoundException {

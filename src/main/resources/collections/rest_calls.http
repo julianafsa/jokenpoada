@@ -1,0 +1,145 @@
+@url = http://localhost:8080/api/v1/jokenpo
+@player1_username = daniel
+@player1_authorization = Bearer {{player1_token.response.body.$.accessToken}}
+@player2_authorization = Bearer {{player2_token.response.body.$.accessToken}}
+
+
+###
+###
+###
+###
+###
+###
+###
+
+POST {{url}}/player/create HTTP/1.1
+
+{
+  "username":"daniel",
+  "password":"1234",
+  "name":"daniel"
+}
+
+###
+POST {{url}}/player/create HTTP/1.1
+
+{
+  "username":"juliana",
+  "password":"1234",
+  "name":"juliana"
+}
+
+
+
+###
+###
+###
+###
+###
+###
+###
+###
+# @name player1_token
+POST {{url}}/login HTTP/1.1
+
+{
+  "username":"daniel",
+  "password":"1234"
+}
+
+###
+# @name player2_token
+POST {{url}}/login HTTP/1.1
+
+{
+  "username":"juliana",
+  "password":"1234"
+}
+
+###
+
+GET {{url}}/player HTTP/1.1
+Authorization: {{player1_authorization}}
+
+
+###
+###
+###
+###
+###
+###
+###
+
+POST {{url}}/move HTTP/1.1
+Authorization: {{player1_authorization}}
+
+{
+  "move":"JOGADA PAPEL"
+}
+
+###
+
+POST {{url}}/move HTTP/1.1
+Authorization: {{player1_authorization}}
+
+{
+  "move":"JOGADA TESOURA"
+}
+
+###
+
+POST {{url}}/move HTTP/1.1
+Authorization: {{player1_authorization}}
+
+{
+  "move":"JOGADA PEDRA"
+}
+
+###
+
+GET {{url}}/move HTTP/1.1
+Authorization: {{player1_authorization}}
+
+
+###
+###
+###
+###
+###
+###
+###
+
+POST {{url}}/game/new HTTP/1.1
+Authorization: {{player1_authorization}}
+
+{
+  "players": [
+    1, 2
+  ]
+}
+
+###
+
+GET {{url}}/game HTTP/1.1
+Authorization: {{player1_authorization}}
+
+###
+
+POST {{url}}/game/move HTTP/1.1
+Authorization: {{player1_authorization}}
+
+{
+  "gameId":1,
+  "moveId":1
+}
+
+###
+
+POST {{url}}/game/move HTTP/1.1
+Authorization: {{player2_authorization}}
+
+{
+  "gameId":1,
+  "moveId":2
+}
+

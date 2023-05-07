@@ -23,9 +23,9 @@ public class MoveController implements MoveControllerDocs {
     }
 
     @PostMapping("")
-    public ResponseEntity<Void> createMove(@RequestBody MoveDto move) throws DataConflictException, BadRequestException {
-        moveService.createMove(move);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Move> createMove(@RequestBody MoveDto move) throws DataConflictException, BadRequestException {
+        var moveCreated = moveService.createMove(move);
+        return new ResponseEntity<Move>(moveCreated, HttpStatus.CREATED);
     }
 
     @GetMapping("")
