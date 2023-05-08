@@ -129,8 +129,8 @@ POST {{url}}/game/move HTTP/1.1
 Authorization: {{player1_authorization}}
 
 {
-  "gameId":1,
-  "moveId":1
+  "gameId":3,
+  "moveId":3
 }
 
 ###
@@ -139,7 +139,7 @@ POST {{url}}/game/move HTTP/1.1
 Authorization: {{player2_authorization}}
 
 {
-  "gameId":1,
+  "gameId":3,
   "moveId":2
 }
 

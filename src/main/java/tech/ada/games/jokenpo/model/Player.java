@@ -30,6 +30,7 @@ public class Player implements Serializable {
     @Column(nullable = false)
     private String name;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "players_roles",
             joinColumns = @JoinColumn(name = "player_id", referencedColumnName = "id"),

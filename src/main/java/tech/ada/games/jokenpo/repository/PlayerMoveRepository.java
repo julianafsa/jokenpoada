@@ -45,7 +45,7 @@ public interface PlayerMoveRepository extends JpaRepository<PlayerMove, Long> {
     boolean existsLagartoByUnfinishedGameId(@Param("gameId") Long gameId);
 
     @Query("SELECT pm FROM PlayerMove pm WHERE pm.game.id = :gameId AND pm.game.finished = FALSE " +
-            "AND UPPER(pm.move.move) ILIKE '%:move%'")
+            "AND pm.move.move ILIKE %:move%")
     List<PlayerMove> findByUnfinishedGameId(@Param("gameId") Long gameId, @Param("move") String move);
 
 }

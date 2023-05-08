@@ -14,6 +14,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest req, HttpServletResponse res, AuthenticationException exception)
         throws IOException, ServletException {
-        res.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
+            if (res.getStatus() != 200)
+            res.sendError(res.getStatus());
+        else
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
     }
 }
