@@ -27,7 +27,7 @@ public interface MoveControllerDocs {
             @ApiResponse(responseCode = "409", description = "A jogada já está cadastrada", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
-    ResponseEntity<Void> createMove(@RequestBody MoveDto move) throws DataConflictException, BadRequestException;
+    ResponseEntity<Move> createMove(@RequestBody MoveDto move) throws DataConflictException, BadRequestException;
 
     @Operation(summary = "Retorna uma lista de jogadas cadastradas", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {

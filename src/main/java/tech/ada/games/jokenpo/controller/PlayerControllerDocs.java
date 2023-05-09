@@ -25,7 +25,7 @@ public interface PlayerControllerDocs {
             @ApiResponse(responseCode = "409", description = "O Jogador já está cadastrado", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
-    ResponseEntity<Void> createPlayer(@RequestBody PlayerDto player) throws DataConflictException;
+    ResponseEntity<Player> createPlayer(@RequestBody PlayerDto player) throws DataConflictException;
 
     @Operation(summary = "Retorna uma lista de jogadores cadastrados", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {

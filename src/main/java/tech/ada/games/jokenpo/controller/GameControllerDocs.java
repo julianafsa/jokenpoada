@@ -29,7 +29,7 @@ public interface GameControllerDocs {
             @ApiResponse(responseCode = "404", description = "O jogador não está cadastrado!", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
-    ResponseEntity<Void> newGame(@RequestBody GameDto gameDto) throws BadRequestException,
+    ResponseEntity<Game> newGame(@RequestBody GameDto gameDto) throws BadRequestException,
             DataNotFoundException;
 
     @Operation(summary = "Registro de uma jogada do jogador logado", security = @SecurityRequirement(name = "bearerAuth"))
