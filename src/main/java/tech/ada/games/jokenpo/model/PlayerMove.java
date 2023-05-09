@@ -1,7 +1,6 @@
 package tech.ada.games.jokenpo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

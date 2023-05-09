@@ -25,20 +25,24 @@ public interface GameControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Jogo iniciado com sucesso!", content = @Content),
             @ApiResponse(responseCode = "400", description = "O jogo possui menos que dois jogadores!", content = @Content),
-            @ApiResponse(responseCode = "404", description = "O jogador não está cadastrado!", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Jogador não logado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "O jogador não está cadastrado!", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
-    ResponseEntity<Game> newGame(@RequestBody GameDto gameDto) throws BadRequestException,
+    ResponseEntity<Void> newGame(@RequestBody GameDto gameDto) throws BadRequestException,
             DataNotFoundException;
 
     @Operation(summary = "Registro de uma jogada do jogador logado", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Jogada realizada! Caso todos os jogadores da partida tenham" +
+            @ApiResponse(responseCode = "200", description = "Jogada realizada! Caso todos os jogadores da partida tenham " +
                     "realizado suas jogadas, a partida encerra com o resultado final!",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ResultDto.class))}),
             @ApiResponse(responseCode = "400", description = "O jogo já foi finalizado!", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Jogador não logado", content = @Content),
             @ApiResponse(responseCode = "404", description = "O jogador ou a jogada não estão cadastrados", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Jogador já realizou a sua jogada!", content = @Content)
+            @ApiResponse(responseCode = "409", description = "Jogador já realizou a sua jogada!", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     ResponseEntity<ResultDto> insertPlayerMove(@RequestBody GameMoveDto gameMove) throws BadRequestException,
             DataNotFoundException, DataConflictException;
@@ -47,7 +51,9 @@ public interface GameControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de jogos cadastrados",
                 content = { @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = List.class))})
+                    schema = @Schema(implementation = List.class))}),
+            @ApiResponse(responseCode = "401", description = "Jogador não logado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     ResponseEntity<List<Game>> findGames();
 
@@ -56,7 +62,9 @@ public interface GameControllerDocs {
             @ApiResponse(responseCode = "200", description = "Jogo encontrado com sucesso",
                 content = { @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Game.class))}),
-            @ApiResponse(responseCode = "404", description = "Este jogo não está cadastrado", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Jogador não logado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Este jogo não está cadastrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     ResponseEntity<Game> findGame(@PathVariable Long id) throws DataNotFoundException;
 

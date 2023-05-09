@@ -23,16 +23,20 @@ public interface MoveControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Jogada criada com sucesso", content = @Content),
             @ApiResponse(responseCode = "400", description = "Você pode cadastrar apenas os movimentos Spock, Tesoura, Papel, Pedra e Lagarto", content = @Content),
-            @ApiResponse(responseCode = "409", description = "A jogada já está cadastrada", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Jogador não logado", content = @Content),
+            @ApiResponse(responseCode = "409", description = "A jogada já está cadastrada", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
-    ResponseEntity<Move> createMove(@RequestBody MoveDto move) throws DataConflictException, BadRequestException;
+    ResponseEntity<Void> createMove(@RequestBody MoveDto move) throws DataConflictException, BadRequestException;
 
     @Operation(summary = "Retorna uma lista de jogadas cadastradas", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de jogadas cadastradas",
                 content = { @Content(mediaType = "application/json",
                     schema = @Schema(implementation = List.class))}),
-            @ApiResponse(responseCode = "404", description = "Não há jogadas cadastradas", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Jogador não logado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Não há jogadas cadastradas", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     ResponseEntity<List<Move>> findMoves() throws DataNotFoundException;
 
@@ -41,7 +45,9 @@ public interface MoveControllerDocs {
             @ApiResponse(responseCode = "200", description = "Jogada encontrada com sucesso",
                 content = { @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Move.class))}),
-            @ApiResponse(responseCode = "404", description = "A jogada não está cadastrada", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Jogador não logado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "A jogada não está cadastrada", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     ResponseEntity<Move> findMove(@PathVariable String move) throws DataNotFoundException;
 
