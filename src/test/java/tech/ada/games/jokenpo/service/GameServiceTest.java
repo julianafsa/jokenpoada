@@ -7,6 +7,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.exception.BadRequestException;
+import tech.ada.games.jokenpo.exception.DataConflictException;
 import tech.ada.games.jokenpo.exception.DataNotFoundException;
 import tech.ada.games.jokenpo.model.*;
 import tech.ada.games.jokenpo.repository.GameRepository;
@@ -84,7 +86,6 @@ class GameServiceTest {
         final Long moveId = 1L;
         final GameMoveDto gameMoveDto = new GameMoveDto(gameId, moveId);
 
-        final Long playerId = 1L;
         final String playerUsername1 = "player1";
         final Player player1 = this.buildPlayer(1L, playerUsername1);
 
@@ -158,6 +159,64 @@ class GameServiceTest {
         verify(gameRepository, times(1)).findById(1L);
     }
 
+
+    @Test
+    void insertPlayerMoveWithSuccessTest() throws DataNotFoundException, DataConflictException, BadRequestException {
+        // Given (Arrange)
+        final Long id = 1L;
+        final Player player = this.buildPlayer(id, "player");
+        final Game expectedResponse = this.buildGame(player);
+        final Move expectedMove = this.buildMove();
+        final PlayerMove expectedPlayerMove = this.buildPlayerMove(expectedResponse, player);
+        final Long expectedCountMovesPlayed = 1L;
+        final Long expectedCountMovesTotal = 2L;
+
+        when(gameRepository.findById(id)).thenReturn(Optional.of(expectedResponse));
+        when(moveRepository.findById(any())).thenReturn(Optional.of(expectedMove));
+        when(playerMoveRepository.findByUnfinishedGameIdAndPlayer(any(), any())).thenReturn(Optional.of(expectedPlayerMove));
+        when(playerMoveRepository.countMovesPlayedByUnfinishedGame(any())).thenReturn(expectedCountMovesPlayed);
+        when(playerMoveRepository.countByUnfinishedGameId(any())).thenReturn(expectedCountMovesTotal);
+        when(playerRepository.findByUsername(any())).thenReturn(Optional.of(player));
+        assertNotNull(service.insertPlayerMove(buildGameMoveDTO()));
+
+    }
+
+    @Test
+    void insertPlayerMoveWithSuccessFinishingSpockWinsGameTest() throws DataNotFoundException, DataConflictException, BadRequestException {
+        // Given (Arrange)
+        final Long id = 1L;
+        final Player player = this.buildPlayer(id, "player");
+        final Game expectedResponse = this.buildGame(player);
+        final Move expectedMove = this.buildMove();
+        final PlayerMove expectedPlayerMove = this.buildPlayerMove(expectedResponse, player);
+        final Long expectedCountMovesPlayed = 2L;
+        final Long expectedCountMovesTotal = 2L;
+
+        final boolean expectedIsSpock = true;
+        final boolean expectedIsTesoura = true;
+        final boolean expectedIsPapel = false;
+        final boolean expectedIsPedra = false;
+        final boolean expectedIsLagarto = false;
+
+        when(gameRepository.findById(id)).thenReturn(Optional.of(expectedResponse));
+        when(moveRepository.findById(any())).thenReturn(Optional.of(expectedMove));
+        when(playerMoveRepository.findByUnfinishedGameIdAndPlayer(any(), any())).thenReturn(Optional.of(expectedPlayerMove));
+        when(playerMoveRepository.countMovesPlayedByUnfinishedGame(any())).thenReturn(expectedCountMovesPlayed);
+        when(playerMoveRepository.countByUnfinishedGameId(any())).thenReturn(expectedCountMovesTotal);
+        when(playerRepository.findByUsername(any())).thenReturn(Optional.of(player));
+        when(playerMoveRepository.existsSpockByUnfinishedGameId(any())).thenReturn(expectedIsSpock);
+        when(playerMoveRepository.existsTesouraByUnfinishedGameId(any())).thenReturn(expectedIsTesoura);
+        when(playerMoveRepository.existsPapelByUnfinishedGameId(any())).thenReturn(expectedIsPapel);
+        when(playerMoveRepository.existsPedraByUnfinishedGameId(any())).thenReturn(expectedIsPedra);
+        when(playerMoveRepository.existsLagartoByUnfinishedGameId(any())).thenReturn(expectedIsLagarto);
+        when(playerMoveRepository.findByUnfinishedGameId(any(), any())).thenReturn(List.of(expectedPlayerMove));
+        var result = service.insertPlayerMove(buildGameMoveDTO()).getMessage();
+        assertEquals("Vencedor: Player", result);
+
+
+    }
+
+
     private GameDto buildGameDto() {
         final GameDto gameDto = new GameDto();
         List<Long> players = Arrays.asList(1L, 2L);
@@ -192,6 +251,29 @@ class GameServiceTest {
         game.setFinished(Boolean.FALSE);
         game.setCreatedAt(LocalDateTime.now());
         return game;
+    }
+
+    private GameMoveDto buildGameMoveDTO() {
+        GameMoveDto gmDto = new GameMoveDto();
+
+        gmDto.setMoveId(1L);
+        gmDto.setGameId(1L);
+        return gmDto;
+    }
+    private Move buildMove() {
+        Move move = new Move();
+        move.setMove("tesoura");
+        move.setId(1L);
+        return move;
+    }
+
+    private PlayerMove buildPlayerMove(Game game, Player player) {
+        PlayerMove pMove = new PlayerMove();
+
+        pMove.setGame(game);
+        pMove.setPlayer(player);
+        pMove.setId(1L);
+        return pMove;
     }
 
 }

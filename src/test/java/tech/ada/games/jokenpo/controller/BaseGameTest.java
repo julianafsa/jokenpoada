@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import tech.ada.games.jokenpo.dto.GameDto;
-import tech.ada.games.jokenpo.dto.LoginDto;
-import tech.ada.games.jokenpo.dto.MoveDto;
-import tech.ada.games.jokenpo.dto.PlayerDto;
+import tech.ada.games.jokenpo.dto.*;
+import tech.ada.games.jokenpo.exception.BadRequestException;
 import tech.ada.games.jokenpo.exception.DataConflictException;
 import tech.ada.games.jokenpo.exception.DataNotFoundException;
 import tech.ada.games.jokenpo.model.Move;
@@ -42,7 +40,7 @@ abstract class BaseGameTest {
     protected AuthService authService;
 
     protected void populateDatabase() {
-        this.buildPlayers();
+        this.buildPlayers(5);
         this.buildMoves();
     }
 
@@ -50,17 +48,14 @@ abstract class BaseGameTest {
         final LoginDto loginDto = this.buildLoginDto("player1", "1234");
         return authService.login(loginDto);
     }
-    protected void buildPlayers() {
-        final String playerUsername1 = "player1";
-        final String playerName1 = "Player 1";
-        final String playerPassword1 = "1234";
-        final PlayerDto playerDto1 = this.buildPlayerDto(playerUsername1, playerName1, playerPassword1);
-        this.createPlayerIfNotExists(playerDto1);
-        final String playerUsername2 = "player2";
-        final String playerName2 = "Player 2";
-        final String playerPassword2 = "1234";
-        final PlayerDto playerDto2 = this.buildPlayerDto(playerUsername2, playerName2, playerPassword2);
-        this.createPlayerIfNotExists(playerDto2);
+    protected void buildPlayers(int n) {
+        for (int i = 1; i <= n; i++) {
+            final String playerUsername = "player" + i;
+            final String playerName = "Player " + i;
+            final String playerPassword = "1234";
+            final PlayerDto playerDto = this.buildPlayerDto(playerUsername, playerName, playerPassword);
+            this.createPlayerIfNotExists(playerDto);
+        }
     }
 
     protected void buildMoves() {
@@ -87,7 +82,7 @@ abstract class BaseGameTest {
         return playerDto;
     }
 
-    private LoginDto buildLoginDto(final String username, final String password) {
+    protected LoginDto buildLoginDto(final String username, final String password) {
         final LoginDto loginDto = new LoginDto();
         loginDto.setUsername(username);
         loginDto.setPassword(password);
@@ -104,7 +99,7 @@ abstract class BaseGameTest {
         }
     }
 
-    private Optional<Player> createPlayer(final PlayerDto playerDto) {
+    protected Optional<Player> createPlayer(final PlayerDto playerDto) {
         try {
             playerService.createPlayer(playerDto);
         } catch (DataConflictException exception) {
@@ -117,16 +112,7 @@ abstract class BaseGameTest {
         }
     }
 
-    protected Optional<Move> createMoveIfNotExists(final MoveDto moveDto) {
-        try {
-            final Move move = moveService.findByMove(moveDto.getMove());
-            return Optional.ofNullable(move);
-        } catch (DataNotFoundException exception) {
-            return this.createMove(moveDto);
-        }
-    }
-
-    private Optional<Move> createMove(final MoveDto moveDto) {
+    protected Optional<Move> createMove(final MoveDto moveDto) {
         try {
             moveService.createMove(moveDto);
         } catch (Exception exception) {
@@ -139,5 +125,20 @@ abstract class BaseGameTest {
             return Optional.empty();
         }
     }
+
+    protected void createGame(final GameDto gameDto) throws DataNotFoundException, BadRequestException {
+        service.newGame(gameDto);
+    }
+
+    protected GameMoveDto buildGameMoveDto(Long gameId, Long moveId) {
+        return GameMoveDto.builder()
+                .gameId(gameId)
+                .moveId(moveId)
+                .build();
+    }
+
+//    protected void dropGames() {
+//        service.deleteAll();
+//    }
 
 }
