@@ -64,7 +64,7 @@ class GameControllerTest extends BaseGameTest {
                         .andDo(print())
                         .andReturn().getResponse();
 
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatus());
     }
 
     @Test
