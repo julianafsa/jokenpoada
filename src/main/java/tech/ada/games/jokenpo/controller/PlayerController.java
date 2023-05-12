@@ -37,7 +37,7 @@ public class PlayerController implements PlayerControllerDocs {
         return new ResponseEntity<>(playerService.findByPlayer(player), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{player}")
+    @DeleteMapping("/{playerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePlayer(@PathVariable Long playerId) throws DataConflictException, DataNotFoundException {
         playerService.deletePlayer(playerId);

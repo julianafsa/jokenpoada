@@ -13,6 +13,7 @@ import tech.ada.games.jokenpo.exception.DataNotFoundException;
 import tech.ada.games.jokenpo.service.GameService;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/jokenpo/game")
@@ -39,7 +40,12 @@ public class GameController implements GameControllerDocs {
 
     @GetMapping("")
     public ResponseEntity<List<Game>> findGames() {
-        return new ResponseEntity<>(gameService.findGames(), HttpStatus.OK);
+        final List<Game> games = gameService.findGames();
+        if (Objects.nonNull(games) && !games.isEmpty()) {
+            return new ResponseEntity<>(games, HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
     }
 
     @GetMapping("/{id}")
