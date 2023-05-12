@@ -182,7 +182,7 @@ class GameControllerTest extends BaseGameTest {
                         //.andDo(print())
                         .andReturn().getResponse();
 
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatus());
         //assertEquals("Jogada realizada! Faltam 1 jogadores para finalizar o jogo!", resultDto.getMessage());
     }
 
