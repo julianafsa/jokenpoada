@@ -1,11 +1,7 @@
 package tech.ada.games.jokenpo.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -18,7 +14,6 @@ import tech.ada.games.jokenpo.dto.ResultDto;
 import tech.ada.games.jokenpo.model.Game;
 import tech.ada.games.jokenpo.response.AuthResponse;
 
-import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class GameControllerTest extends BaseGameTest {
+class GameControllerTest extends AbstractBaseTest {
 
     private final String baseUri = "/api/v1/jokenpo/game";
     private AuthResponse authResponse;
@@ -202,7 +197,7 @@ class GameControllerTest extends BaseGameTest {
                                 .header("Authorization", authResponse.getAccessToken()))
                         .andDo(print())
                         .andReturn().getResponse();
-        final List<Game> games = this.asObjectList(response.getContentAsString());
+        final List<Game> games = this.asGameListObject(response.getContentAsString());
 
         assertEquals(2, games.size());
         assertEquals(Boolean.FALSE, games.get(0).getFinished());
@@ -236,7 +231,7 @@ class GameControllerTest extends BaseGameTest {
                         .andDo(print())
                         .andReturn().getResponse();
 
-        final Game game = this.asObject(response.getContentAsString());
+        final Game game = this.asGameObject(response.getContentAsString());
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertNotNull(game);
         assertEquals(1, game.getId());
@@ -256,44 +251,6 @@ class GameControllerTest extends BaseGameTest {
         final String responseAsString = response.getContentAsString();
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
         assertEquals("", responseAsString);
-    }
-
-    private String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private List<Game> asObjectList(final String json) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            return objectMapper.readValue(json, new TypeReference<List<Game>>(){});
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Game asObject(final String json) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            return objectMapper.readValue(json, Game.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private ResultDto asResultDtoObject(final String json) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            return objectMapper.readValue(json, ResultDto.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

@@ -1,15 +1,20 @@
 package tech.ada.games.jokenpo.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.web.servlet.MockMvc;
-import tech.ada.games.jokenpo.dto.GameDto;
-import tech.ada.games.jokenpo.dto.LoginDto;
-import tech.ada.games.jokenpo.dto.MoveDto;
-import tech.ada.games.jokenpo.dto.PlayerDto;
+import tech.ada.games.jokenpo.dto.*;
+import tech.ada.games.jokenpo.exception.BadRequestException;
 import tech.ada.games.jokenpo.exception.DataConflictException;
 import tech.ada.games.jokenpo.exception.DataNotFoundException;
+import tech.ada.games.jokenpo.model.Game;
 import tech.ada.games.jokenpo.model.Move;
 import tech.ada.games.jokenpo.model.Player;
 import tech.ada.games.jokenpo.response.AuthResponse;
@@ -18,19 +23,20 @@ import tech.ada.games.jokenpo.service.GameService;
 import tech.ada.games.jokenpo.service.MoveService;
 import tech.ada.games.jokenpo.service.PlayerService;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-abstract class BaseTests {
+abstract class AbstractBaseTest {
 
     @Autowired
     protected MockMvc mvc;
 
     @Autowired
-    protected GameService gameService;
+    protected GameService service;
 
     @Autowired
     protected PlayerService playerService;
@@ -41,8 +47,11 @@ abstract class BaseTests {
     @Autowired
     protected AuthService authService;
 
+    @Autowired
+    private DataSource dataSource; // application.properties
+
     protected void populateDatabase() {
-        this.buildPlayers();
+        this.buildPlayers(5);
         this.buildMoves();
     }
 
@@ -50,17 +59,14 @@ abstract class BaseTests {
         final LoginDto loginDto = this.buildLoginDto("player1", "1234");
         return authService.login(loginDto);
     }
-    protected void buildPlayers() {
-        final String playerUsername1 = "player1";
-        final String playerName1 = "Player 1";
-        final String playerPassword1 = "1234";
-        final PlayerDto playerDto1 = this.buildPlayerDto(playerUsername1, playerName1, playerPassword1);
-        this.createPlayerIfNotExists(playerDto1);
-        final String playerUsername2 = "player2";
-        final String playerName2 = "Player 2";
-        final String playerPassword2 = "1234";
-        final PlayerDto playerDto2 = this.buildPlayerDto(playerUsername2, playerName2, playerPassword2);
-        this.createPlayerIfNotExists(playerDto2);
+    protected void buildPlayers(int n) {
+        for (int i = 1; i <= n; i++) {
+            final String playerUsername = "player" + i;
+            final String playerName = "Player " + i;
+            final String playerPassword = "1234";
+            final PlayerDto playerDto = this.buildPlayerDto(playerUsername, playerName, playerPassword);
+            this.createPlayerIfNotExists(playerDto);
+        }
     }
 
     protected void buildMoves() {
@@ -87,7 +93,7 @@ abstract class BaseTests {
         return playerDto;
     }
 
-    private LoginDto buildLoginDto(final String username, final String password) {
+    protected LoginDto buildLoginDto(final String username, final String password) {
         final LoginDto loginDto = new LoginDto();
         loginDto.setUsername(username);
         loginDto.setPassword(password);
@@ -104,7 +110,7 @@ abstract class BaseTests {
         }
     }
 
-    private Optional<Player> createPlayer(final PlayerDto playerDto) {
+    protected Optional<Player> createPlayer(final PlayerDto playerDto) {
         try {
             playerService.createPlayer(playerDto);
         } catch (DataConflictException exception) {
@@ -117,16 +123,7 @@ abstract class BaseTests {
         }
     }
 
-    protected Optional<Move> createMoveIfNotExists(final MoveDto moveDto) {
-        try {
-            final Move move = moveService.findByMove(moveDto.getMove());
-            return Optional.ofNullable(move);
-        } catch (DataNotFoundException exception) {
-            return this.createMove(moveDto);
-        }
-    }
-
-    private Optional<Move> createMove(final MoveDto moveDto) {
+    protected Optional<Move> createMove(final MoveDto moveDto) {
         try {
             moveService.createMove(moveDto);
         } catch (Exception exception) {
@@ -138,6 +135,64 @@ abstract class BaseTests {
         } catch (DataNotFoundException e) {
             return Optional.empty();
         }
+    }
+
+    protected void createGame(final GameDto gameDto) throws DataNotFoundException, BadRequestException {
+        service.newGame(gameDto);
+    }
+
+    protected GameMoveDto buildGameMoveDto(Long gameId, Long moveId) {
+        return GameMoveDto.builder()
+                .gameId(gameId)
+                .moveId(moveId)
+                .build();
+    }
+
+    // OBJECT MAPPER
+    protected String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected List<Game> asGameListObject(final String json) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            return objectMapper.readValue(json, new TypeReference<List<Game>>(){});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected Game asGameObject(final String json) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            return objectMapper.readValue(json, Game.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected ResultDto asResultDtoObject(final String json) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            return objectMapper.readValue(json, ResultDto.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // SCRIPTS
+    protected void executeScript(final String scriptName) {
+        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.setContinueOnError(false);
+        populator.addScript(new ClassPathResource(scriptName));
+        DatabasePopulatorUtils.execute(populator, dataSource);
     }
 
 }
