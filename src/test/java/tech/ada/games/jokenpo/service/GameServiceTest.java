@@ -542,6 +542,21 @@ class GameServiceTest {
         verify(playerRepository, times(0)).findById(2L);
     }
 
+    // Teste criado utilizando o TDD
+    @Test void getRankingTest() {
+
+        // Given
+        List<RankingDto> expectedRanking = this.buildRankingDtoList(3);
+        when(gameRepository.getRanking()).thenReturn(expectedRanking);
+
+        // When
+        List<RankingDto> response = service.getRanking();
+
+        // Then
+        assertEquals(expectedRanking.size(), response.size());
+        verify(gameRepository, times(1)).getRanking();
+    }
+
     private GameDto buildGameDto() {
         final GameDto gameDto = new GameDto();
         List<Long> players = Arrays.asList(1L, 2L);
@@ -604,6 +619,18 @@ class GameServiceTest {
         pMove.setPlayer(player);
         pMove.setId(id);
         return pMove;
+    }
+
+    private List<RankingDto> buildRankingDtoList(int n) {
+        final List<RankingDto> list = new ArrayList<>();
+        for (int i = 1, j = n; i <= n; i++, j--) {
+            list.add(RankingDto.builder()
+                        .ranking(Long.valueOf(i))
+                        .playerId(Long.valueOf(i))
+                        .victories(Long.valueOf(j))
+                        .build());
+        }
+        return list;
     }
 
 }
