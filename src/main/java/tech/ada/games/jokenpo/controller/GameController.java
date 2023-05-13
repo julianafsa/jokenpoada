@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
 import tech.ada.games.jokenpo.dto.ResultDto;
 import tech.ada.games.jokenpo.model.Game;
 import tech.ada.games.jokenpo.exception.BadRequestException;
@@ -51,6 +52,15 @@ public class GameController implements GameControllerDocs {
     @GetMapping("/{id}")
     public ResponseEntity<Game> findGame(@PathVariable Long id) throws DataNotFoundException {
         return new ResponseEntity<>(gameService.findGameById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/ranking")
+    public ResponseEntity<List<RankingDto>> getRanking() {
+        final List<RankingDto> list = gameService.getRanking();
+        if (Objects.nonNull(list) && !list.isEmpty()) {
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

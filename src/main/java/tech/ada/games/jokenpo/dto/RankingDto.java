@@ -1,5 +1,6 @@
 package tech.ada.games.jokenpo.dto;
 
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RankingDto {
-    private Long ranking;
-    private String name;
-    private String username;
-    private Long victories;
+    public Long ranking;
+    public String name;
+    public String username;
+    public Long victories;
+
 }

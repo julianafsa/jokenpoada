@@ -164,6 +164,9 @@ public class GameService {
     }
 
     public List<RankingDto> getRanking() {
-        return gameRepository.getRanking();
+        List<Object> objects = gameRepository.getRanking();
+
+        List<RankingDto> list = new ArrayList<RankingDto>();
+        return list;
     }
 }

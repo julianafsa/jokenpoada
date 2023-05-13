@@ -626,7 +626,7 @@ class GameServiceTest {
         final List<RankingDto> list = new ArrayList<>();
         for (int i = 1, j = n; i <= n; i++, j--) {
             list.add(RankingDto.builder()
-                        .ranking(Long.valueOf(i))
+                        //.ranking(Long.valueOf(i))
                         .username("player"+Long.valueOf(i))
                         .name("Player "+Long.valueOf(i))
                         .victories(Long.valueOf(j))
