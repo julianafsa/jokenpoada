@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
 import tech.ada.games.jokenpo.dto.ResultDto;
 import tech.ada.games.jokenpo.model.Move;
 import tech.ada.games.jokenpo.model.Game;
@@ -162,4 +163,7 @@ public class GameService {
                 new DataNotFoundException("O jogador não está cadastrado!"));
     }
 
+    public List<RankingDto> getRanking() {
+        return gameRepository.getRanking();
+    }
 }

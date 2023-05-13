@@ -7,6 +7,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
 import tech.ada.games.jokenpo.dto.ResultDto;
 import tech.ada.games.jokenpo.exception.BadRequestException;
 import tech.ada.games.jokenpo.exception.DataConflictException;
@@ -626,7 +627,8 @@ class GameServiceTest {
         for (int i = 1, j = n; i <= n; i++, j--) {
             list.add(RankingDto.builder()
                         .ranking(Long.valueOf(i))
-                        .playerId(Long.valueOf(i))
+                        .username("player"+Long.valueOf(i))
+                        .name("Player "+Long.valueOf(i))
                         .victories(Long.valueOf(j))
                         .build());
         }
