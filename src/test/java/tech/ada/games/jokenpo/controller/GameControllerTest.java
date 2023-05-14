@@ -10,6 +10,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.DirtiesContext;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
 import tech.ada.games.jokenpo.dto.ResultDto;
 import tech.ada.games.jokenpo.model.Game;
 import tech.ada.games.jokenpo.response.AuthResponse;
@@ -252,5 +253,46 @@ class GameControllerTest extends AbstractBaseTest {
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
         assertEquals("", responseAsString);
     }
+
+    @Test
+    void getRankingTest() throws Exception {
+        // Given
+        this.authResponse = this.loginAsF1rstPlayer();
+        final int numberOfPlayers = 5;
+        this.createGames(5);
+
+        // When
+        final MockHttpServletResponse response =
+                mvc.perform(get(baseUri + "/ranking")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", authResponse.getAccessToken()))
+                        .andDo(print())
+                        .andReturn().getResponse();
+        final List<RankingDto> rankingResponse = this.asRankingListObject(response.getContentAsString());
+
+        // Then
+        assertNotNull(rankingResponse);
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(numberOfPlayers, rankingResponse.size());
+    }
+
+//    @Test
+//    void getRankingTestNoContent() throws Exception {
+//        // Given
+//        this.authResponse = this.loginAsF1rstPlayer();
+//        final List<Game> expectedGame = this.createGames(5);
+//
+//        // When
+//        final MockHttpServletResponse response =
+//                mvc.perform(get(baseUri + "/ranking")
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .header("Authorization", authResponse.getAccessToken()))
+//                        .andDo(print())
+//                        .andReturn().getResponse();
+//
+//        // Then
+//        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+//    }
+
 
 }

@@ -3,6 +3,7 @@ package tech.ada.games.jokenpo.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,10 +25,13 @@ import tech.ada.games.jokenpo.service.MoveService;
 import tech.ada.games.jokenpo.service.PlayerService;
 
 import javax.sql.DataSource;
+import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 abstract class AbstractBaseTest {
@@ -59,6 +63,12 @@ abstract class AbstractBaseTest {
         final LoginDto loginDto = this.buildLoginDto("player1", "1234");
         return authService.login(loginDto);
     }
+
+    protected AuthResponse loginPlayer(String username, String password) {
+        final LoginDto loginDto = this.buildLoginDto(username, password);
+        return authService.login(loginDto);
+    }
+
     protected void buildPlayers(int n) {
         for (int i = 1; i <= n; i++) {
             final String playerUsername = "player" + i;
@@ -137,8 +147,8 @@ abstract class AbstractBaseTest {
         }
     }
 
-    protected void createGame(final GameDto gameDto) throws DataNotFoundException, BadRequestException {
-        service.newGame(gameDto);
+    protected Game createGame(final GameDto gameDto) throws DataNotFoundException, BadRequestException {
+        return service.newGame(gameDto);
     }
 
     protected GameMoveDto buildGameMoveDto(Long gameId, Long moveId) {
@@ -146,6 +156,42 @@ abstract class AbstractBaseTest {
                 .gameId(gameId)
                 .moveId(moveId)
                 .build();
+    }
+
+    protected List<Game> createGames(int n) throws DataNotFoundException, BadRequestException, DataConflictException {
+        this.buildMoves();
+        List<Game> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            SecureRandom rand = new SecureRandom();
+            int upperbound = 5;
+            List<Integer> playersIds = new ArrayList<>();
+            int playerIdRandom1 = rand.nextInt(upperbound) + 1;
+            int playerIdRandom2 = rand.nextInt(upperbound) + 1;
+            while (playerIdRandom2 == playerIdRandom1) {
+                playerIdRandom2 = rand.nextInt(upperbound) + 1;
+            }
+            playersIds.add(playerIdRandom1);
+            playersIds.add(playerIdRandom2);
+            //this.loginPlayer("player"+playerIdRandom1);
+            GameDto gameDto = this.buildGameDto(Arrays.asList(
+                    (long)playerIdRandom1, (long)playerIdRandom2));
+            Game game = this.createGame(gameDto);
+            log.info("Game: " + game.toString());
+            for (Integer playerId : playersIds) {
+                int moveIdRandom = rand.nextInt(upperbound) + 1;
+                GameMoveDto gameMoveDto = GameMoveDto.builder()
+                        .gameId(game.getId())
+                        .moveId((long)(moveIdRandom))
+                        .build();
+                String username = "player" + playerId;
+                log.info("GameMoveDto: " + gameMoveDto.toString());
+                log.info("Jogador logado: " + username);
+                this.loginPlayer(username, "1234");
+                service.insertPlayerMove(gameMoveDto);
+            }
+            list.add(game);
+        }
+        return list;
     }
 
     // OBJECT MAPPER
@@ -182,6 +228,16 @@ abstract class AbstractBaseTest {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             return objectMapper.readValue(json, ResultDto.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected List<RankingDto> asRankingListObject(final String json) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            return objectMapper.readValue(json, new TypeReference<List<RankingDto>>(){});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

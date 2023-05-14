@@ -57,10 +57,10 @@ public class GameController implements GameControllerDocs {
     @GetMapping("/ranking")
     public ResponseEntity<List<RankingDto>> getRanking() {
         final List<RankingDto> list = gameService.getRanking();
-        if (Objects.nonNull(list) && !list.isEmpty()) {
+        //if (Objects.nonNull(list) && !list.isEmpty()) {
             return new ResponseEntity<>(list, HttpStatus.OK);
-        }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        //}
+        //return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
