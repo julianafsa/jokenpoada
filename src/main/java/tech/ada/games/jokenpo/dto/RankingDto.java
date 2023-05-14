@@ -1,6 +1,5 @@
 package tech.ada.games.jokenpo.dto;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +14,4 @@ public class RankingDto {
     public String name;
     public String username;
     public Long victories;
-
 }
