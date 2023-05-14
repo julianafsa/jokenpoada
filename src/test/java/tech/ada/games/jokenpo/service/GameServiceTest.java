@@ -1,5 +1,6 @@
 package tech.ada.games.jokenpo.service;
 
+import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,25 +8,30 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
 import tech.ada.games.jokenpo.dto.ResultDto;
 import tech.ada.games.jokenpo.exception.BadRequestException;
 import tech.ada.games.jokenpo.exception.DataConflictException;
 import tech.ada.games.jokenpo.exception.DataNotFoundException;
-import tech.ada.games.jokenpo.model.*;
+import tech.ada.games.jokenpo.model.Game;
+import tech.ada.games.jokenpo.model.Move;
+import tech.ada.games.jokenpo.model.Player;
+import tech.ada.games.jokenpo.model.PlayerMove;
 import tech.ada.games.jokenpo.repository.GameRepository;
 import tech.ada.games.jokenpo.repository.MoveRepository;
 import tech.ada.games.jokenpo.repository.PlayerMoveRepository;
 import tech.ada.games.jokenpo.repository.PlayerRepository;
 import tech.ada.games.jokenpo.security.SecurityUtils;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class GameServiceTest {
+class GameServiceTest extends AbstractServiceTest {
 
     private GameRepository gameRepository;
     private PlayerMoveRepository playerMoveRepository;
@@ -542,68 +548,19 @@ class GameServiceTest {
         verify(playerRepository, times(0)).findById(2L);
     }
 
-    private GameDto buildGameDto() {
-        final GameDto gameDto = new GameDto();
-        List<Long> players = Arrays.asList(1L, 2L);
-        gameDto.setPlayers(players);
-        return gameDto;
-    }
+    // Teste criado utilizando o TDD
+    @Test void getRankingTest() {
 
-    private GameDto buildGameDto(List<Long> players) {
-        final GameDto gameDto = new GameDto();
-        gameDto.setPlayers(players);
-        return gameDto;
-    }
+        // Given
+        List<Tuple> expectedTuple = this.buildTupleList(3);
+        when(gameRepository.getRanking()).thenReturn(expectedTuple);
 
-    private Player buildPlayer(final Long id, final String username, final String name) {
-        final Player player = new Player();
-        player.setId(id);
-        player.setUsername(username);
-        player.setPassword("1234");
-        player.setName(name);
-        final Role role = this.buildRole();
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        player.setRoles(roles);
-        return player;
-    }
+        // When
+        List<RankingDto> response = service.getRanking();
 
-    private Role buildRole() {
-        final Role role = new Role();
-        role.setId(1L);
-        role.setName("ROLE_USER");
-        return role;
-    }
-
-    private Game buildGame(final Player player) {
-        final Game game = new Game();
-        game.setId(player.getId());
-        game.setCreator(player);
-        game.setFinished(Boolean.FALSE);
-        game.setCreatedAt(LocalDateTime.now());
-        return game;
-    }
-
-    private GameMoveDto buildGameMoveDTO() {
-        GameMoveDto gmDto = new GameMoveDto();
-
-        gmDto.setMoveId(1L);
-        gmDto.setGameId(1L);
-        return gmDto;
-    }
-    private Move buildMove(final Long id, final String moveName) {
-        Move move = new Move();
-        move.setMove(moveName);
-        move.setId(id);
-        return move;
-    }
-
-    private PlayerMove buildPlayerMove(Long id, Game game, Player player) {
-        PlayerMove pMove = new PlayerMove();
-        pMove.setGame(game);
-        pMove.setPlayer(player);
-        pMove.setId(id);
-        return pMove;
+        // Then
+        assertEquals(expectedTuple.size(), response.size());
+        verify(gameRepository, times(1)).getRanking();
     }
 
 }
