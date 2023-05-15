@@ -1,26 +1,29 @@
 package tech.ada.games.jokenpo.service;
 
+import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
 import tech.ada.games.jokenpo.dto.ResultDto;
-import tech.ada.games.jokenpo.model.Move;
-import tech.ada.games.jokenpo.model.Game;
-import tech.ada.games.jokenpo.model.Player;
 import tech.ada.games.jokenpo.exception.BadRequestException;
 import tech.ada.games.jokenpo.exception.DataConflictException;
 import tech.ada.games.jokenpo.exception.DataNotFoundException;
+import tech.ada.games.jokenpo.model.Game;
+import tech.ada.games.jokenpo.model.Move;
+import tech.ada.games.jokenpo.model.Player;
 import tech.ada.games.jokenpo.model.PlayerMove;
 import tech.ada.games.jokenpo.repository.GameRepository;
-import tech.ada.games.jokenpo.repository.PlayerMoveRepository;
 import tech.ada.games.jokenpo.repository.MoveRepository;
+import tech.ada.games.jokenpo.repository.PlayerMoveRepository;
 import tech.ada.games.jokenpo.repository.PlayerRepository;
 import tech.ada.games.jokenpo.security.SecurityUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,7 +46,7 @@ public class GameService {
         this.playerRepository = playerRepository;
     }
 
-    public void newGame(GameDto gameDto) throws BadRequestException, DataNotFoundException {
+    public Game newGame(GameDto gameDto) throws BadRequestException, DataNotFoundException {
         Player currentPlayer = verifyCurrentPlayer();
         Game game = new Game();
         game.setCreator(currentPlayer);
@@ -61,6 +64,7 @@ public class GameService {
             playerMoveRepository.save(playerMove);
         }
         log.info("Jogo iniciado com sucesso!");
+        return game;
     }
 
     public ResultDto insertPlayerMove(GameMoveDto gameMove) throws DataNotFoundException, BadRequestException, DataConflictException {
@@ -160,6 +164,25 @@ public class GameService {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         return playerRepository.findByUsername(currentUser).orElseThrow(() ->
                 new DataNotFoundException("O jogador não está cadastrado!"));
+    }
+
+    public List<RankingDto> getRanking() {
+        List<Tuple> tuple = gameRepository.getRanking();
+        if (Objects.nonNull(tuple) && !tuple.isEmpty()) {
+            return this.mapTupleToRankingDtoList(tuple);
+        }
+        return new ArrayList<>();
+    }
+
+    private List<RankingDto> mapTupleToRankingDtoList(final List<Tuple> tuple) {
+        return tuple.stream()
+                .map(t -> new RankingDto(
+                        t.get(0, Long.class),
+                        t.get(1, String.class),
+                        t.get(2, String.class),
+                        t.get(3, Long.class)
+                ))
+                .collect(Collectors.toList());
     }
 
 }

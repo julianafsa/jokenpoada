@@ -1,0 +1,203 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Role</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo.model</a>
+</div>
+
+<h1>Coverage Summary for Class: Role (tech.ada.games.jokenpo.model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Role</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$2PveWpY7</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$3InMvGSu</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$4PMYUmVe</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$6rrAqHaB</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$7nw4bdp0</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$7Q687byd</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$alW06Zui</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$c7zWTsV1</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$gIOpGyin</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$hsCDs46p</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$idKarHqw</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$KGUqoh3W</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$KL83O6Ba</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$kpk0aRSb</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$m0zGKGQl</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$M2CMHIa1</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$OksiYnCe</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$R2PcwfYf</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$tb34txdw</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$vTWxC678</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$VWjht7KL</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$YmuaZvfd</td>
+  </tr>
+  <tr>
+    <td class="name">Role$HibernateProxy$z3BubBp1</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.model;
+&nbsp;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import lombok.EqualsAndHashCode;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;import lombok.ToString;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;roles&quot;)
+&nbsp;@Getter
+<b class="fc">&nbsp;@Setter</b>
+<b class="fc">&nbsp;@EqualsAndHashCode</b>
+<b class="nc">&nbsp;@ToString</b>
+<b class="fc">&nbsp;public class Role implements Serializable {</b>
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<b class="fc">&nbsp;    private Long id;</b>
+<b class="fc">&nbsp;    private String name;</b>
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
+</div>
+</body>
+</html>

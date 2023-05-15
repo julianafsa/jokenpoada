@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
 import tech.ada.games.jokenpo.dto.ResultDto;
 import tech.ada.games.jokenpo.model.Game;
 import tech.ada.games.jokenpo.exception.BadRequestException;
@@ -13,6 +14,7 @@ import tech.ada.games.jokenpo.exception.DataNotFoundException;
 import tech.ada.games.jokenpo.service.GameService;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/jokenpo/game")
@@ -39,12 +41,26 @@ public class GameController implements GameControllerDocs {
 
     @GetMapping("")
     public ResponseEntity<List<Game>> findGames() {
-        return new ResponseEntity<>(gameService.findGames(), HttpStatus.OK);
+        final List<Game> games = gameService.findGames();
+        if (Objects.nonNull(games) && !games.isEmpty()) {
+            return new ResponseEntity<>(games, HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Game> findGame(@PathVariable Long id) throws DataNotFoundException {
         return new ResponseEntity<>(gameService.findGameById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/ranking")
+    public ResponseEntity<List<RankingDto>> getRanking() {
+        final List<RankingDto> list = gameService.getRanking();
+        //if (Objects.nonNull(list) && !list.isEmpty()) {
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        //}
+        //return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

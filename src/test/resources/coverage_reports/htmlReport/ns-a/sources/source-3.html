@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > MoveService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo.service</a>
+</div>
+
+<h1>Coverage Summary for Class: MoveService (tech.ada.games.jokenpo.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MoveService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (23/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.service;
+&nbsp;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import tech.ada.games.jokenpo.dto.MoveDto;
+&nbsp;import tech.ada.games.jokenpo.exception.BadRequestException;
+&nbsp;import tech.ada.games.jokenpo.exception.DataConflictException;
+&nbsp;import tech.ada.games.jokenpo.exception.DataNotFoundException;
+&nbsp;import tech.ada.games.jokenpo.model.Move;
+&nbsp;import tech.ada.games.jokenpo.repository.MoveRepository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class MoveService {
+&nbsp;
+&nbsp;    private final MoveRepository moveRepository;
+&nbsp;
+<b class="fc">&nbsp;    public MoveService(MoveRepository moveRepository) {</b>
+<b class="fc">&nbsp;        this.moveRepository = moveRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void createMove(MoveDto moveDto) throws DataConflictException, BadRequestException {
+<b class="fc">&nbsp;        if (moveRepository.existsByMove(moveDto.getMove()))</b>
+<b class="fc">&nbsp;            throw new DataConflictException(&quot;A jogada já está cadastrada!&quot;);</b>
+<b class="fc">&nbsp;        if (!moveDto.getMove().equalsIgnoreCase(&quot;Spock&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Jogada Spock&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Tesoura&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Jogada Tesoura&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Papel&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Jogada Papel&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Pedra&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Jogada Pedra&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Lagarto&quot;) &amp;&amp;</b>
+<b class="fc">&nbsp;                !moveDto.getMove().equalsIgnoreCase(&quot;Jogada Lagarto&quot;)) {</b>
+<b class="fc">&nbsp;            throw new BadRequestException(&quot;Você pode cadastrar apenas os movimentos Spock, Tesoura, Papel, Pedra e Lagarto&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Move move = new Move();</b>
+<b class="fc">&nbsp;        move.setMove(moveDto.getMove());</b>
+<b class="fc">&nbsp;        moveRepository.save(move);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Move&gt; findMoves() throws DataNotFoundException {
+<b class="fc">&nbsp;        List&lt;Move&gt; moves = moveRepository.findAll();</b>
+<b class="fc">&nbsp;        if (moves.isEmpty())</b>
+<b class="fc">&nbsp;            throw new DataNotFoundException(&quot;Não há jogadas cadastradas!&quot;);</b>
+<b class="fc">&nbsp;        return moves;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Move findByMove(String move) throws DataNotFoundException {
+<b class="fc">&nbsp;        return moveRepository.findByMove(move).orElseThrow(() -&gt; new DataNotFoundException(&quot;A jogada não está cadastrada!&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
+</div>
+</body>
+</html>

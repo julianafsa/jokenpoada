@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'jokenpo' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">tech.ada.games.jokenpo.service</a> &gt; <span class="el_source">GameService.java</span></div><h1>GameService.java</h1><pre class="source lang-java linenums">package tech.ada.games.jokenpo.service;
+
+import jakarta.persistence.Tuple;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import tech.ada.games.jokenpo.dto.GameDto;
+import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
+import tech.ada.games.jokenpo.dto.ResultDto;
+import tech.ada.games.jokenpo.exception.BadRequestException;
+import tech.ada.games.jokenpo.exception.DataConflictException;
+import tech.ada.games.jokenpo.exception.DataNotFoundException;
+import tech.ada.games.jokenpo.model.Game;
+import tech.ada.games.jokenpo.model.Move;
+import tech.ada.games.jokenpo.model.Player;
+import tech.ada.games.jokenpo.model.PlayerMove;
+import tech.ada.games.jokenpo.repository.GameRepository;
+import tech.ada.games.jokenpo.repository.MoveRepository;
+import tech.ada.games.jokenpo.repository.PlayerMoveRepository;
+import tech.ada.games.jokenpo.repository.PlayerRepository;
+import tech.ada.games.jokenpo.security.SecurityUtils;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+<span class="fc" id="L29">@Slf4j</span>
+@Transactional
+public class GameService {
+
+    private final GameRepository gameRepository;
+
+    private final PlayerMoveRepository playerMoveRepository;
+
+    private final MoveRepository moveRepository;
+
+    private final PlayerRepository playerRepository;
+
+    public GameService(GameRepository gameRepository, PlayerMoveRepository playerMoveRepository,
+<span class="fc" id="L42">                       MoveRepository moveRepository, PlayerRepository playerRepository) {</span>
+<span class="fc" id="L43">        this.gameRepository = gameRepository;</span>
+<span class="fc" id="L44">        this.playerMoveRepository = playerMoveRepository;</span>
+<span class="fc" id="L45">        this.moveRepository = moveRepository;</span>
+<span class="fc" id="L46">        this.playerRepository = playerRepository;</span>
+<span class="fc" id="L47">    }</span>
+
+    public Game newGame(GameDto gameDto) throws BadRequestException, DataNotFoundException {
+<span class="fc" id="L50">        Player currentPlayer = verifyCurrentPlayer();</span>
+<span class="fc" id="L51">        Game game = new Game();</span>
+<span class="fc" id="L52">        game.setCreator(currentPlayer);</span>
+<span class="fc" id="L53">        game.setCreatedAt(LocalDateTime.now());</span>
+<span class="fc" id="L54">        game.setFinished(false);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (gameDto.getPlayers().size() &lt; 2)</span>
+<span class="fc" id="L56">            throw new BadRequestException(&quot;O jogo possui menos que dois jogadores!&quot;);</span>
+<span class="fc" id="L57">        Game savedGame = gameRepository.save(game);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (Long playerId : gameDto.getPlayers()) {</span>
+<span class="fc" id="L59">            Player player = playerRepository.findById(playerId).orElseThrow(() -&gt;</span>
+<span class="fc" id="L60">                    new DataNotFoundException(&quot;O jogador não está cadastrado!&quot;));</span>
+<span class="fc" id="L61">            PlayerMove playerMove = new PlayerMove();</span>
+<span class="fc" id="L62">            playerMove.setGame(savedGame);</span>
+<span class="fc" id="L63">            playerMove.setPlayer(player);</span>
+<span class="fc" id="L64">            playerMoveRepository.save(playerMove);</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">        log.info(&quot;Jogo iniciado com sucesso!&quot;);</span>
+<span class="fc" id="L67">        return game;</span>
+    }
+
+    public ResultDto insertPlayerMove(GameMoveDto gameMove) throws DataNotFoundException, BadRequestException, DataConflictException {
+<span class="fc" id="L71">        Player currentPlayer = verifyCurrentPlayer();</span>
+<span class="fc" id="L72">        Game currentGame = gameRepository.findById(gameMove.getGameId()).orElseThrow(() -&gt;</span>
+<span class="fc" id="L73">                new DataNotFoundException(&quot;Jogo não cadastrado!&quot;));</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (currentGame.getFinished())</span>
+<span class="fc" id="L75">            throw new BadRequestException(&quot;O jogo já foi finalizado!&quot;);</span>
+<span class="fc" id="L76">        Move move = moveRepository.findById(gameMove.getMoveId()).orElseThrow(() -&gt;</span>
+<span class="fc" id="L77">                new DataNotFoundException(&quot;Jogada não cadastrada&quot;));</span>
+<span class="fc" id="L78">        PlayerMove playerMove = playerMoveRepository.findByUnfinishedGameIdAndPlayer(currentPlayer.getId(),</span>
+<span class="fc" id="L79">                gameMove.getGameId()).orElseThrow(() -&gt;</span>
+<span class="fc" id="L80">                new DataNotFoundException(&quot;Jogador não está cadastrado no jogo!&quot;));</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (playerMove.getMove() != null)</span>
+<span class="fc" id="L82">            throw new DataConflictException(&quot;Jogador já realizou a sua jogada!&quot;);</span>
+<span class="fc" id="L83">        playerMove.setMove(move);</span>
+<span class="fc" id="L84">        playerMoveRepository.save(playerMove);</span>
+<span class="fc" id="L85">        Long countMovesPlayed = playerMoveRepository.countMovesPlayedByUnfinishedGame(currentGame.getId());</span>
+<span class="fc" id="L86">        Long countMovesTotal = playerMoveRepository.countByUnfinishedGameId(currentGame.getId());</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (Objects.equals(countMovesPlayed, countMovesTotal)) {</span>
+<span class="fc" id="L88">            log.info(&quot;Todos os jogadores já realizaram suas jogadas! Gerando o resultado final!&quot;);</span>
+<span class="fc" id="L89">            boolean isSpock = playerMoveRepository.existsSpockByUnfinishedGameId(currentGame.getId());</span>
+<span class="fc" id="L90">            boolean isTesoura = playerMoveRepository.existsTesouraByUnfinishedGameId(currentGame.getId());</span>
+<span class="fc" id="L91">            boolean isPapel = playerMoveRepository.existsPapelByUnfinishedGameId(currentGame.getId());</span>
+<span class="fc" id="L92">            boolean isPedra = playerMoveRepository.existsPedraByUnfinishedGameId(currentGame.getId());</span>
+<span class="fc" id="L93">            boolean isLagarto = playerMoveRepository.existsLagartoByUnfinishedGameId(currentGame.getId());</span>
+<span class="pc bpc" id="L94" title="2 of 10 branches missed.">            if (isSpock &amp;&amp; (isTesoura || isPedra) &amp;&amp; !isPapel &amp;&amp; !isLagarto) {</span>
+<span class="fc" id="L95">                return produceResult(currentGame, &quot;Spock&quot;);</span>
+            }
+<span class="pc bpc" id="L97" title="2 of 10 branches missed.">            if (isTesoura &amp;&amp; (isPapel || isLagarto) &amp;&amp; !isSpock &amp;&amp; !isPedra)</span>
+<span class="fc" id="L98">                return produceResult(currentGame, &quot;Tesoura&quot;);</span>
+<span class="pc bpc" id="L99" title="3 of 10 branches missed.">            if (isPapel &amp;&amp; (isPedra || isSpock) &amp;&amp; !isTesoura &amp;&amp; !isLagarto)</span>
+<span class="fc" id="L100">                return produceResult(currentGame, &quot;Papel&quot;);</span>
+<span class="pc bpc" id="L101" title="3 of 10 branches missed.">            if (isPedra &amp;&amp; (isLagarto || isTesoura) &amp;&amp; !isSpock &amp;&amp; !isPapel)</span>
+<span class="fc" id="L102">                return produceResult(currentGame, &quot;Pedra&quot;);</span>
+<span class="pc bpc" id="L103" title="3 of 10 branches missed.">            if (isLagarto &amp;&amp; (isSpock || isPapel) &amp;&amp; !isTesoura &amp;&amp; !isPedra)</span>
+<span class="fc" id="L104">                return produceResult(currentGame, &quot;Lagarto&quot;);</span>
+<span class="fc" id="L105">            return produceResult(currentGame, &quot;Resultado Empate&quot;);</span>
+        } else {
+<span class="fc" id="L107">            long remain = countMovesTotal - countMovesPlayed;</span>
+<span class="fc" id="L108">            String msg = &quot;Jogada realizada! Faltam &quot; + remain + &quot; jogadores para finalizar o jogo!&quot;;</span>
+<span class="fc" id="L109">            log.info(msg);</span>
+<span class="fc" id="L110">            ResultDto dto = new ResultDto();</span>
+<span class="fc" id="L111">            dto.setMessage(msg);</span>
+<span class="fc" id="L112">            return dto;</span>
+        }
+    }
+
+    public List&lt;Game&gt; findGames() {
+<span class="fc" id="L117">        return gameRepository.findAll();</span>
+    }
+
+    public Game findGameById(Long id) throws DataNotFoundException {
+<span class="fc" id="L121">        return gameRepository.findById(id).orElseThrow(() -&gt; new DataNotFoundException(&quot;Este jogo não está cadastrado!&quot;));</span>
+    }
+
+    private ResultDto produceResult(Game currentGame, String result) {
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (!result.equals(&quot;Resultado Empate&quot;)) {</span>
+<span class="fc" id="L126">            List&lt;PlayerMove&gt; playerMoves = playerMoveRepository.findByUnfinishedGameId(currentGame.getId(), result);</span>
+<span class="fc" id="L127">            Long moveId = playerMoves.get(0).getMove().getId();</span>
+<span class="fc" id="L128">            Set&lt;Player&gt; winners = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L129">            List&lt;Long&gt; playerIds = new ArrayList&lt;&gt;();</span>
+            String msg;
+<span class="fc bfc" id="L131" title="All 2 branches covered.">            if (playerMoves.size() == 1) {</span>
+<span class="fc" id="L132">                msg = &quot;Vencedor: &quot; + playerMoves.get(0).getPlayer().getName();</span>
+<span class="fc" id="L133">                winners.add(playerMoves.get(0).getPlayer());</span>
+<span class="fc" id="L134">                playerIds.add(playerMoves.get(0).getPlayer().getId());</span>
+            } else {
+<span class="fc" id="L136">                StringBuilder builderMsg = new StringBuilder(&quot;Vencedores: &quot;);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">                for (PlayerMove pm : playerMoves) {</span>
+<span class="fc" id="L138">                    builderMsg.append(pm.getPlayer().getName());</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">                    if (playerMoves.get(playerMoves.size()-1).equals(pm)) {</span>
+<span class="fc" id="L140">                        builderMsg.append(&quot; &quot;);</span>
+                    } else {
+<span class="fc" id="L142">                        builderMsg.append(&quot; e &quot;);</span>
+                    }
+<span class="fc" id="L144">                    winners.add(pm.getPlayer());</span>
+<span class="fc" id="L145">                    playerIds.add(pm.getPlayer().getId());</span>
+<span class="fc" id="L146">                }</span>
+<span class="fc" id="L147">                msg = builderMsg.toString();</span>
+            }
+<span class="fc" id="L149">            currentGame.setWinners(winners);</span>
+<span class="fc" id="L150">            currentGame.setFinished(true);</span>
+<span class="fc" id="L151">            gameRepository.save(currentGame);</span>
+<span class="fc" id="L152">            ResultDto dto = new ResultDto();</span>
+<span class="fc" id="L153">            dto.setWinners(playerIds);</span>
+<span class="fc" id="L154">            dto.setMoveId(moveId);</span>
+<span class="fc" id="L155">            dto.setMessage(msg);</span>
+<span class="fc" id="L156">            return dto;</span>
+        }
+<span class="fc" id="L158">        ResultDto dto = new ResultDto();</span>
+<span class="fc" id="L159">        dto.setMessage(result);</span>
+<span class="fc" id="L160">        return dto;</span>
+    }
+
+    private Player verifyCurrentPlayer() throws DataNotFoundException {
+<span class="fc" id="L164">        String currentUser = SecurityUtils.getCurrentUserLogin();</span>
+<span class="fc" id="L165">        return playerRepository.findByUsername(currentUser).orElseThrow(() -&gt;</span>
+<span class="fc" id="L166">                new DataNotFoundException(&quot;O jogador não está cadastrado!&quot;));</span>
+    }
+
+    public List&lt;RankingDto&gt; getRanking() {
+<span class="fc" id="L170">        List&lt;Tuple&gt; tuple = gameRepository.getRanking();</span>
+<span class="pc bpc" id="L171" title="1 of 4 branches missed.">        if (Objects.nonNull(tuple) &amp;&amp; !tuple.isEmpty()) {</span>
+<span class="fc" id="L172">            return this.mapTupleToRankingDtoList(tuple);</span>
+        }
+<span class="fc" id="L174">        return new ArrayList&lt;&gt;();</span>
+    }
+
+    private List&lt;RankingDto&gt; mapTupleToRankingDtoList(final List&lt;Tuple&gt; tuple) {
+<span class="fc" id="L178">        return tuple.stream()</span>
+<span class="fc" id="L179">                .map(t -&gt; new RankingDto(</span>
+<span class="fc" id="L180">                        t.get(0, Long.class),</span>
+<span class="fc" id="L181">                        t.get(1, String.class),</span>
+<span class="fc" id="L182">                        t.get(2, String.class),</span>
+<span class="fc" id="L183">                        t.get(3, Long.class)</span>
+                ))
+<span class="fc" id="L185">                .collect(Collectors.toList());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,219 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Player</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo.model</a>
+</div>
+
+<h1>Coverage Summary for Class: Player (tech.ada.games.jokenpo.model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Player</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$0ysY7qcD</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$12DSK98g</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$1nIVhUXP</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$2l2t1jzI</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$4OMyjdGq</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$6m6pZYc8</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$aN8umJQ6</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$azOQCX1h</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$ClgNAq5I</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$dHkDsFjb</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$IOMBXQ4M</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$j2sfkfdN</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$jHORb1p0</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$kkP0pKbM</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$mbKvneIx</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$nDZEMubn</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$oWrNler2</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$scqQOeaG</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$sxyqlDO6</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$tFqzTOJi</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$TIuQi8Db</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$Yg8tqe1m</td>
+  </tr>
+  <tr>
+    <td class="name">Player$HibernateProxy$zXSW7Oo5</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.model;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.annotation.JsonIgnore;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import lombok.*;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Getter
+<b class="fc">&nbsp;@Setter</b>
+<b class="fc">&nbsp;@NoArgsConstructor</b>
+<b class="fc">&nbsp;@AllArgsConstructor</b>
+<b class="fc">&nbsp;@EqualsAndHashCode</b>
+<b class="nc">&nbsp;@ToString</b>
+&nbsp;public class Player implements Serializable {
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<b class="fc">&nbsp;    private Long id;</b>
+&nbsp;
+&nbsp;    @Column(nullable = false, unique = true)
+<b class="fc">&nbsp;    private String username;</b>
+&nbsp;
+&nbsp;    @JsonIgnore
+&nbsp;    @Column(nullable = false)
+<b class="fc">&nbsp;    private String password;</b>
+&nbsp;
+&nbsp;    @Column(nullable = false)
+<b class="fc">&nbsp;    private String name;</b>
+&nbsp;
+&nbsp;    @JsonIgnore
+&nbsp;    @ManyToMany(fetch = FetchType.EAGER)
+&nbsp;    @JoinTable(name = &quot;players_roles&quot;,
+&nbsp;            joinColumns = @JoinColumn(name = &quot;player_id&quot;, referencedColumnName = &quot;id&quot;),
+&nbsp;            inverseJoinColumns = @JoinColumn(name = &quot;role_id&quot;, referencedColumnName = &quot;id&quot;))
+<b class="fc">&nbsp;    private Set&lt;Role&gt; roles;</b>
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
+</div>
+</body>
+</html>

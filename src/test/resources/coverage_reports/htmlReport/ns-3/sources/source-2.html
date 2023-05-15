@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GameController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: GameController (tech.ada.games.jokenpo.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.controller;
+&nbsp;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import tech.ada.games.jokenpo.dto.GameDto;
+&nbsp;import tech.ada.games.jokenpo.dto.GameMoveDto;
+&nbsp;import tech.ada.games.jokenpo.dto.RankingDto;
+&nbsp;import tech.ada.games.jokenpo.dto.ResultDto;
+&nbsp;import tech.ada.games.jokenpo.model.Game;
+&nbsp;import tech.ada.games.jokenpo.exception.BadRequestException;
+&nbsp;import tech.ada.games.jokenpo.exception.DataConflictException;
+&nbsp;import tech.ada.games.jokenpo.exception.DataNotFoundException;
+&nbsp;import tech.ada.games.jokenpo.service.GameService;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/v1/jokenpo/game&quot;)
+&nbsp;public class GameController implements GameControllerDocs {
+&nbsp;
+&nbsp;    private final GameService gameService;
+&nbsp;
+<b class="fc">&nbsp;    public GameController(GameService gameService) {</b>
+<b class="fc">&nbsp;        this.gameService = gameService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/new&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; newGame(@RequestBody GameDto gameDto) throws BadRequestException,
+&nbsp;            DataNotFoundException {
+<b class="fc">&nbsp;        gameService.newGame(gameDto);</b>
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(HttpStatus.CREATED);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/move&quot;)
+&nbsp;    public ResponseEntity&lt;ResultDto&gt; insertPlayerMove(@RequestBody GameMoveDto gameMove) throws BadRequestException,
+&nbsp;            DataNotFoundException, DataConflictException {
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(gameService.insertPlayerMove(gameMove), HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Game&gt;&gt; findGames() {
+<b class="fc">&nbsp;        final List&lt;Game&gt; games = gameService.findGames();</b>
+<b class="fc">&nbsp;        if (Objects.nonNull(games) &amp;&amp; !games.isEmpty()) {</b>
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(games, HttpStatus.OK);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Game&gt; findGame(@PathVariable Long id) throws DataNotFoundException {
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(gameService.findGameById(id), HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/ranking&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;RankingDto&gt;&gt; getRanking() {
+<b class="fc">&nbsp;        final List&lt;RankingDto&gt; list = gameService.getRanking();</b>
+&nbsp;        //if (Objects.nonNull(list) &amp;&amp; !list.isEmpty()) {
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(list, HttpStatus.OK);</b>
+&nbsp;        //}
+&nbsp;        //return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
+</div>
+</body>
+</html>

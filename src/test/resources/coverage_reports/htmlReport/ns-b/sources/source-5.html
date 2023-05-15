@@ -1,0 +1,94 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GameRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: GameRepository (tech.ada.games.jokenpo.repository)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">GameRepository$MockitoMock$IF9sfIBf</td>
+  </tr>
+  <tr>
+    <td class="name">GameRepository$MockitoMock$IF9sfIBf$auxiliary$8pVugr3u</td>
+  </tr>
+  <tr>
+    <td class="name">GameRepository$MockitoMock$IF9sfIBf$auxiliary$AZ6und7W</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.repository;
+&nbsp;
+&nbsp;import jakarta.persistence.Tuple;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import tech.ada.games.jokenpo.model.Game;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface GameRepository extends JpaRepository&lt;Game, Long&gt; {
+&nbsp;
+&nbsp;    @Query(value = &quot;select rownum() as ranking, subselect.* from &quot; +
+&nbsp;            &quot; (select  p.NAME as name, p.USERNAME as username, count(w.game_id) as victories&quot; +
+&nbsp;            &quot; from Player as p left join GAMES_WINNERS w on  p.ID = w.player_id&quot; +
+&nbsp;            &quot; group by p.ID order by victories desc) as subselect&quot;, nativeQuery = true)
+&nbsp;    List&lt;Tuple&gt; getRanking();
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
+</div>
+</body>
+</html>

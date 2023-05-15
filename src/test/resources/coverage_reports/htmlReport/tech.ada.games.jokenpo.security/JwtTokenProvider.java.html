@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtTokenProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'jokenpo' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">tech.ada.games.jokenpo.security</a> &gt; <span class="el_source">JwtTokenProvider.java</span></div><h1>JwtTokenProvider.java</h1><pre class="source lang-java linenums">package tech.ada.games.jokenpo.security;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+
+@Component
+<span class="fc" id="L15">public class JwtTokenProvider {</span>
+
+    @Value(&quot;${app.jwt-secret}&quot;)
+    private String jwtSecret;
+
+    @Value(&quot;${app.jwt-expiration-milliseconds}&quot;)
+    private int jwtExpirationInMs;
+
+    public String generateToken(Authentication authentication) {
+<span class="fc" id="L24">        String username = authentication.getName();</span>
+<span class="fc" id="L25">        Date currentDate = new Date();</span>
+<span class="fc" id="L26">        Date expireDate = new Date(currentDate.getTime() + jwtExpirationInMs);</span>
+
+<span class="fc" id="L28">        return Jwts.builder()</span>
+<span class="fc" id="L29">                .setSubject(username)</span>
+<span class="fc" id="L30">                .setIssuedAt(new Date())</span>
+<span class="fc" id="L31">                .setExpiration(expireDate)</span>
+<span class="fc" id="L32">                .signWith(key())</span>
+<span class="fc" id="L33">                .compact();</span>
+    }
+
+    public String getUsername(String token) {
+<span class="nc" id="L37">        Claims claims = Jwts.parserBuilder()</span>
+<span class="nc" id="L38">                .setSigningKey(key())</span>
+<span class="nc" id="L39">                .build()</span>
+<span class="nc" id="L40">                .parseClaimsJws(token)</span>
+<span class="nc" id="L41">                .getBody();</span>
+<span class="nc" id="L42">        return claims.getSubject();</span>
+    }
+
+    public boolean validateToken(String token) {
+        try {
+<span class="nc" id="L47">            Jwts.parserBuilder().setSigningKey(key()).build()</span>
+<span class="nc" id="L48">                    .parse(token);</span>
+<span class="nc" id="L49">            return true;</span>
+<span class="nc" id="L50">        } catch (SignatureException ex) {</span>
+<span class="nc" id="L51">            throw new RuntimeException(&quot;JWT inválido&quot;);</span>
+<span class="nc" id="L52">        } catch (MalformedJwtException ex) {</span>
+<span class="nc" id="L53">            throw new RuntimeException(&quot;Token inválido&quot;);</span>
+<span class="nc" id="L54">        } catch (ExpiredJwtException ex) {</span>
+<span class="nc" id="L55">            throw new RuntimeException(&quot;Token expirado&quot;);</span>
+<span class="nc" id="L56">        } catch (UnsupportedJwtException ex) {</span>
+<span class="nc" id="L57">            throw new RuntimeException(&quot;Token não suportada&quot;);</span>
+<span class="nc" id="L58">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L59">            throw new RuntimeException(&quot;Claims está vazio&quot;);</span>
+        }
+    }
+
+    private Key key() {
+<span class="fc" id="L64">        return Keys.hmacShaKeyFor(</span>
+<span class="fc" id="L65">                Decoders.BASE64.decode(jwtSecret)</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

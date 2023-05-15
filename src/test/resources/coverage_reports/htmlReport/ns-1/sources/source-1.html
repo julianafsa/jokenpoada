@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > JokenpoApplication</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo</a>
+</div>
+
+<h1>Coverage Summary for Class: JokenpoApplication (tech.ada.games.jokenpo)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JokenpoApplication</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">JokenpoApplication$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+&nbsp;import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+&nbsp;import io.swagger.v3.oas.annotations.info.Info;
+&nbsp;import io.swagger.v3.oas.annotations.security.SecurityScheme;
+&nbsp;import org.springframework.boot.SpringApplication;
+&nbsp;import org.springframework.boot.autoconfigure.SpringBootApplication;
+&nbsp;
+&nbsp;@SpringBootApplication
+&nbsp;@OpenAPIDefinition(info = @Info(title = &quot;Jokenpo StarGame&quot;, version = &quot;1.0&quot;, description = &quot;Um JOKENPO diferente, &quot; +
+&nbsp;		&quot;onde você tem duas novas jogadas se unindo às tradicionais: Spock e Lagarto! &quot; +
+&nbsp;		&quot;Divirtam-se e boa sorte!&quot;))
+&nbsp;@SecurityScheme(
+&nbsp;		name = &quot;bearerAuth&quot;,
+&nbsp;		type = SecuritySchemeType.HTTP,
+&nbsp;		bearerFormat = &quot;JWT&quot;,
+&nbsp;		scheme = &quot;bearer&quot;
+&nbsp;)
+<b class="fc">&nbsp;public class JokenpoApplication {</b>
+&nbsp;
+&nbsp;	public static void main(String[] args) {
+<b class="nc">&nbsp;		SpringApplication.run(JokenpoApplication.class, args);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
+</div>
+</body>
+</html>

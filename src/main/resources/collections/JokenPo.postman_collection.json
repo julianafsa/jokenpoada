@@ -1,0 +1,576 @@
+{
+	"info": {
+		"_postman_id": "9fb6ae3f-35f7-4dd2-b968-116ad75416a3",
+		"name": "JokenPo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Player",
+			"item": [
+				{
+					"name": "Criar Jogador",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"jogador4\",\n  \"password\": \"1234\",\n  \"name\": \"Jogador 4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/player/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"player",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Todos Jogadores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "222e840d-7925-457e-8147-ff48af4c149b",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.collectionVariables.set(\"playerId\", jsonData.id)",
+									"pm.collectionVariables.set(\"playerUsername\", jsonData.username)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/player",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"player"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Jogador pelo Nome",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/player/jogador1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"player",
+								"jogador1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir Jogador",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/player/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"player",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Move",
+			"item": [
+				{
+					"name": "Obter Todas as  Jogadas",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/move",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"move"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter  Jogada pelo Nome",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/move/Tesoura",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"move",
+								"Tesoura"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Jogada",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"move\": \"Lagarto\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/move",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"move"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "82ebbdcf-5d6a-449a-8bd1-fcdf58344d37",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"jogador1\",\n  \"password\": \"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Game",
+			"item": [
+				{
+					"name": "Criar Jogo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1632905c-17e2-4f35-9f7d-0866779773e2",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"players\": [\n    1, 2\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/game/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"game",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Jogada do Jogador Logado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "80d765d2-e82a-45d7-8bb7-67ebb46c1660",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"gameId\": 1,\n  \"moveId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/game/move",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"game",
+								"move"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Todos os Jogos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f7dd53ec-90f6-444d-bbc2-2a4a231a66f3",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"gameId\": 1,\n  \"moveId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/game",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"game"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Jogo pelo Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c7c21575-d182-4633-a890-58e1ee28f35c",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"gameId\": 1,\n  \"moveId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/jokenpo/game/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jokenpo",
+								"game",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"variable": [
+		{
+			"id": "0422d0ad-8c25-47e6-97e6-e1e6240a6422",
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"id": "4f7402c1-fd1f-4367-8d57-4cd829802bfc",
+			"key": "playerId",
+			"value": ""
+		},
+		{
+			"id": "a9a3dfe1-2af9-428d-aeef-8cc71e3dd093",
+			"key": "playerUsername",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
