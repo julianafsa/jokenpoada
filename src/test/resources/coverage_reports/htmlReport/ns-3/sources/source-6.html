@@ -1,0 +1,121 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > MoveControllerDocs</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: MoveControllerDocs (tech.ada.games.jokenpo.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">MoveControllerDocs</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.controller;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;import tech.ada.games.jokenpo.dto.MoveDto;
+&nbsp;import tech.ada.games.jokenpo.exception.BadRequestException;
+&nbsp;import tech.ada.games.jokenpo.exception.DataConflictException;
+&nbsp;import tech.ada.games.jokenpo.exception.DataNotFoundException;
+&nbsp;import tech.ada.games.jokenpo.model.Move;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface MoveControllerDocs {
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Registro de uma nova jogada&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Jogada criada com sucesso&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Você pode cadastrar apenas os movimentos Spock, Tesoura, Papel, Pedra e Lagarto&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;A jogada já está cadastrada&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
+&nbsp;    })
+&nbsp;    ResponseEntity&lt;Void&gt; createMove(@RequestBody MoveDto move) throws DataConflictException, BadRequestException;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Retorna uma lista de jogadas cadastradas&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de jogadas cadastradas&quot;,
+&nbsp;                content = { @Content(mediaType = &quot;application/json&quot;,
+&nbsp;                    schema = @Schema(implementation = List.class))}),
+&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Não há jogadas cadastradas&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
+&nbsp;    })
+&nbsp;    ResponseEntity&lt;List&lt;Move&gt;&gt; findMoves() throws DataNotFoundException;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Retorna uma jogada registrada pelo nome&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Jogada encontrada com sucesso&quot;,
+&nbsp;                content = { @Content(mediaType = &quot;application/json&quot;,
+&nbsp;                    schema = @Schema(implementation = Move.class))}),
+&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;A jogada não está cadastrada&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
+&nbsp;    })
+&nbsp;    ResponseEntity&lt;Move&gt; findMove(@PathVariable String move) throws DataNotFoundException;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 03:52</div>
+</div>
+</body>
+</html>

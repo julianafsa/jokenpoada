@@ -1,0 +1,132 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Runner</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo.initialization</a>
+</div>
+
+<h1>Coverage Summary for Class: Runner (tech.ada.games.jokenpo.initialization)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Runner</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.initialization;
+&nbsp;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.springframework.boot.CommandLineRunner;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import tech.ada.games.jokenpo.model.Role;
+&nbsp;import tech.ada.games.jokenpo.repository.RoleRepository;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;public class Runner implements CommandLineRunner {
+&nbsp;
+&nbsp;    private final RoleRepository roleRepository;
+&nbsp;
+<b class="fc">&nbsp;    public Runner(RoleRepository roleRepository) {</b>
+<b class="fc">&nbsp;        this.roleRepository = roleRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void run(String... args) {
+<b class="fc">&nbsp;        Role role = roleRepository.findByName(&quot;ROLE_USER&quot;).orElseGet(() -&gt; {</b>
+<b class="fc">&nbsp;            Role newRole = new Role();</b>
+<b class="fc">&nbsp;            newRole.setName(&quot;ROLE_USER&quot;);</b>
+<b class="fc">&nbsp;            Role savedRole = roleRepository.save(newRole);</b>
+<b class="fc">&nbsp;            log.info(&quot;ROLE_USER adicionado com sucesso&quot;);</b>
+<b class="fc">&nbsp;            return savedRole;</b>
+&nbsp;        });
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 03:52</div>
+</div>
+</body>
+</html>

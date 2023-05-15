@@ -1,0 +1,149 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PlayerController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.games.jokenpo.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: PlayerController (tech.ada.games.jokenpo.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PlayerController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.controller;
+&nbsp;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import tech.ada.games.jokenpo.dto.PlayerDto;
+&nbsp;import tech.ada.games.jokenpo.exception.DataConflictException;
+&nbsp;import tech.ada.games.jokenpo.exception.DataNotFoundException;
+&nbsp;import tech.ada.games.jokenpo.model.Player;
+&nbsp;import tech.ada.games.jokenpo.service.PlayerService;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/v1/jokenpo/player&quot;)
+&nbsp;public class PlayerController implements PlayerControllerDocs {
+&nbsp;
+&nbsp;    private final PlayerService playerService;
+&nbsp;
+<b class="fc">&nbsp;    public PlayerController(PlayerService playerService) {</b>
+<b class="fc">&nbsp;        this.playerService = playerService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/create&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; createPlayer(@RequestBody PlayerDto player) throws DataConflictException {
+<b class="fc">&nbsp;        playerService.createPlayer(player);</b>
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(HttpStatus.CREATED);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Player&gt;&gt; findPlayers() throws DataNotFoundException {
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(playerService.findPlayers(), HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{player}&quot;)
+&nbsp;    public ResponseEntity&lt;Player&gt; findPlayer(@PathVariable String player) throws DataNotFoundException {
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(playerService.findByPlayer(player), HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{playerId}&quot;)
+&nbsp;    @ResponseStatus(HttpStatus.NO_CONTENT)
+&nbsp;    public void deletePlayer(@PathVariable Long playerId) throws DataConflictException, DataNotFoundException {
+<b class="fc">&nbsp;        playerService.deletePlayer(playerId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-15 03:52</div>
+</div>
+</body>
+</html>

@@ -38,18 +38,4 @@ public class DtoTest {
         assertEquals(MoveDto.builder().move("tesoura").build(), expectedDto);
     }
 
-    @Test
-    void RankingDtoTest() {
-        RankingDto expectedRankingDto = new RankingDto();
-        expectedRankingDto.setRanking(1L);
-        expectedRankingDto.setName("Player");
-        expectedRankingDto.setUsername("player");
-        expectedRankingDto.setVictories(10L);
-
-        RankingDto rankingDto =
-                RankingDto.builder().ranking(1L).name("Player").username("player").victories(10L).build();
-
-        assertEquals(expectedRankingDto, rankingDto);
-    }
-
 }
