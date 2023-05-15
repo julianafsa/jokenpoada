@@ -167,35 +167,35 @@ class GameServiceTest extends AbstractServiceTest {
         verify(playerRepository, times(1)).findById(2L);
     }
 
-//    @Test
-//    void insertPlayerMoveTest() throws DataNotFoundException, DataConflictException, BadRequestException {
-//        // Given (Arrange)
-//        final Long gameId = 1L;
-//        final Long moveId = 1L;
-//        final GameMoveDto gameMoveDto = new GameMoveDto(gameId, moveId);
-//        final String playerUsername1 = "player1";
-//        final Player player = this.buildPlayer(1L, playerUsername1, "Player");
-//        final Game game = this.buildGame(player);
-//        final String moveName = "Tesoura";
-//        final Move move = this.buildMove(moveId, moveName);
-//        final PlayerMove playerMove = this.buildPlayerMove(1L, game, player);
-//
-//        mockStatic.when(SecurityUtils::getCurrentUserLogin).thenReturn(playerUsername1);
-//        when(playerRepository.findByUsername(playerUsername1)).thenReturn(Optional.of(player));
-//        when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
-//        when(moveRepository.findById(gameMoveDto.getMoveId())).thenReturn(Optional.of(move));
-//        when(playerMoveRepository.findByUnfinishedGameIdAndPlayer(player.getId(), gameMoveDto.getGameId())).thenReturn(Optional.of(playerMove));
-//        when(playerMoveRepository.save(playerMove)).thenReturn(playerMove);
-//        when(playerMoveRepository.countMovesPlayedByUnfinishedGame(game.getId())).thenReturn(1L);
-//        when(playerMoveRepository.countByUnfinishedGameId(game.getId())).thenReturn(2L);
-//
-//        // When (Act)
-//        final ResultDto resultDto = service.insertPlayerMove(gameMoveDto);
-//
-//        // Then (Assert)
-//        assertNotNull(resultDto);
-//        assertEquals("Jogada realizada! Faltam 1 jogadores para finalizar o jogo!", resultDto.getMessage());
-//    }
+    @Test
+    void insertPlayerMoveTest() throws DataNotFoundException, DataConflictException, BadRequestException {
+        // Given (Arrange)
+        final Long gameId = 1L;
+        final Long moveId = 1L;
+        final GameMoveDto gameMoveDto = new GameMoveDto(gameId, moveId);
+        final String playerUsername1 = "player1";
+        final Player player = this.buildPlayer(1L, playerUsername1, "Player");
+        final Game game = this.buildGame(player);
+        final String moveName = "Tesoura";
+        final Move move = this.buildMove(moveId, moveName);
+        final PlayerMove playerMove = this.buildPlayerMove(1L, game, player);
+
+        mockStatic.when(SecurityUtils::getCurrentUserLogin).thenReturn(playerUsername1);
+        when(playerRepository.findByUsername(playerUsername1)).thenReturn(Optional.of(player));
+        when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
+        when(moveRepository.findById(gameMoveDto.getMoveId())).thenReturn(Optional.of(move));
+        when(playerMoveRepository.findByUnfinishedGameIdAndPlayer(player.getId(), gameMoveDto.getGameId())).thenReturn(Optional.of(playerMove));
+        when(playerMoveRepository.save(playerMove)).thenReturn(playerMove);
+        when(playerMoveRepository.countMovesPlayedByUnfinishedGame(game.getId())).thenReturn(1L);
+        when(playerMoveRepository.countByUnfinishedGameId(game.getId())).thenReturn(2L);
+
+        // When (Act)
+        final ResultDto resultDto = service.insertPlayerMove(gameMoveDto);
+
+        // Then (Assert)
+        assertNotNull(resultDto);
+        assertEquals("Jogada realizada! Faltam 1 jogadores para finalizar o jogo!", resultDto.getMessage());
+    }
 
     @Test
     void findGamesShouldReturnListOfGamesTest() {
