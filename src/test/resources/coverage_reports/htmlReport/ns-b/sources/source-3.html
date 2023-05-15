@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > GameRepository</title>
+  <title>Coverage Report > RoleRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,7 +21,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">tech.ada.games.jokenpo.repository</a>
 </div>
 
-<h1>Coverage Summary for Class: GameRepository (tech.ada.games.jokenpo.repository)</h1>
+<h1>Coverage Summary for Class: RoleRepository (tech.ada.games.jokenpo.repository)</h1>
 
 <table class="coverageStats">
 
@@ -29,13 +29,13 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">GameRepository$MockitoMock$qKTsUXxS</td>
+    <td class="name">RoleRepository$MockitoMock$tm3WVHGp</td>
   </tr>
   <tr>
-    <td class="name">GameRepository$MockitoMock$qKTsUXxS$auxiliary$LGRt83dT</td>
+    <td class="name">RoleRepository$MockitoMock$tm3WVHGp$auxiliary$esGfoYdV</td>
   </tr>
   <tr>
-    <td class="name">GameRepository$MockitoMock$qKTsUXxS$auxiliary$wYGgErlI</td>
+    <td class="name">RoleRepository$MockitoMock$tm3WVHGp$auxiliary$joJvHhkp</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -49,21 +49,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.games.jokenpo.repository;
 &nbsp;
-&nbsp;import jakarta.persistence.Tuple;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
-&nbsp;import org.springframework.data.jpa.repository.Query;
-&nbsp;import tech.ada.games.jokenpo.model.Game;
+&nbsp;import tech.ada.games.jokenpo.model.Role;
 &nbsp;
-&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
 &nbsp;
-&nbsp;public interface GameRepository extends JpaRepository&lt;Game, Long&gt; {
-&nbsp;
-&nbsp;    @Query(value = &quot;select rownum() as ranking, subselect.* from &quot; +
-&nbsp;            &quot; (select  p.NAME as name, p.USERNAME as username, count(w.game_id) as victories&quot; +
-&nbsp;            &quot; from Player as p left join GAMES_WINNERS w on  p.ID = w.player_id&quot; +
-&nbsp;            &quot; group by p.ID order by victories desc) as subselect&quot;, nativeQuery = true)
-&nbsp;    List&lt;Tuple&gt; getRanking();
-&nbsp;
+&nbsp;public interface RoleRepository extends JpaRepository&lt;Role, Long&gt; {
+&nbsp;    Optional&lt;Role&gt; findByName(String name);
 &nbsp;}
 </code>
 </pre>
@@ -88,7 +80,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-05-15 03:52</div>
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
 </div>
 </body>
 </html>

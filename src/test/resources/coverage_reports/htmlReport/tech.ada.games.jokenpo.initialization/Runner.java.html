@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Runner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'jokenpo' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">tech.ada.games.jokenpo.initialization</a> &gt; <span class="el_source">Runner.java</span></div><h1>Runner.java</h1><pre class="source lang-java linenums">package tech.ada.games.jokenpo.initialization;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import tech.ada.games.jokenpo.model.Role;
+import tech.ada.games.jokenpo.repository.RoleRepository;
+
+@Component
+<span class="fc" id="L10">@Slf4j</span>
+public class Runner implements CommandLineRunner {
+
+    private final RoleRepository roleRepository;
+
+<span class="fc" id="L15">    public Runner(RoleRepository roleRepository) {</span>
+<span class="fc" id="L16">        this.roleRepository = roleRepository;</span>
+<span class="fc" id="L17">    }</span>
+
+    @Override
+    public void run(String... args) {
+<span class="fc" id="L21">        Role role = roleRepository.findByName(&quot;ROLE_USER&quot;).orElseGet(() -&gt; {</span>
+<span class="fc" id="L22">            Role newRole = new Role();</span>
+<span class="fc" id="L23">            newRole.setName(&quot;ROLE_USER&quot;);</span>
+<span class="fc" id="L24">            Role savedRole = roleRepository.save(newRole);</span>
+<span class="fc" id="L25">            log.info(&quot;ROLE_USER adicionado com sucesso&quot;);</span>
+<span class="fc" id="L26">            return savedRole;</span>
+        });
+<span class="fc" id="L28">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

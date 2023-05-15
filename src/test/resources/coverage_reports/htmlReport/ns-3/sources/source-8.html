@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > PlayerControllerDocs</title>
+  <title>Coverage Report > AuthControllerDocs</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,14 +21,14 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">tech.ada.games.jokenpo.controller</a>
 </div>
 
-<h1>Coverage Summary for Class: PlayerControllerDocs (tech.ada.games.jokenpo.controller)</h1>
+<h1>Coverage Summary for Class: AuthControllerDocs (tech.ada.games.jokenpo.controller)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">PlayerControllerDocs</td>
+  <td class="name">AuthControllerDocs</td>
 </tr>
 
 </table>
@@ -45,59 +45,21 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import io.swagger.v3.oas.annotations.media.Schema;
 &nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
 &nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
-&nbsp;import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 &nbsp;import org.springframework.http.ResponseEntity;
-&nbsp;import org.springframework.web.bind.annotation.PathVariable;
 &nbsp;import org.springframework.web.bind.annotation.RequestBody;
-&nbsp;import tech.ada.games.jokenpo.dto.PlayerDto;
-&nbsp;import tech.ada.games.jokenpo.exception.DataConflictException;
-&nbsp;import tech.ada.games.jokenpo.exception.DataNotFoundException;
-&nbsp;import tech.ada.games.jokenpo.model.Player;
+&nbsp;import tech.ada.games.jokenpo.dto.LoginDto;
+&nbsp;import tech.ada.games.jokenpo.response.AuthResponse;
 &nbsp;
-&nbsp;import java.util.List;
+&nbsp;public interface AuthControllerDocs {
 &nbsp;
-&nbsp;public interface PlayerControllerDocs {
-&nbsp;
-&nbsp;    @Operation(summary = &quot;Registro de um novo jogador&quot;)
+&nbsp;    @Operation(summary = &quot;Realizar a autenticação do usuário&quot;)
 &nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Jogador criado com sucesso&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;O Jogador já está cadastrado&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Usuário autenticado com sucesso&quot;,
+&nbsp;                    content = { @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))}),
+&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Usuário e/ou senha inválidos&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
 &nbsp;    })
-&nbsp;    ResponseEntity&lt;Void&gt; createPlayer(@RequestBody PlayerDto player) throws DataConflictException;
-&nbsp;
-&nbsp;    @Operation(summary = &quot;Retorna uma lista de jogadores cadastrados&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
-&nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de jogadores cadastrados&quot;,
-&nbsp;                content = { @Content(mediaType = &quot;application/json&quot;,
-&nbsp;                    schema = @Schema(implementation = List.class))}),
-&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Não há jogadores cadastrados&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
-&nbsp;    })
-&nbsp;    ResponseEntity&lt;List&lt;Player&gt;&gt; findPlayers() throws DataNotFoundException;
-&nbsp;
-&nbsp;    @Operation(summary = &quot;Retorna um jogador registrado pelo nome&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
-&nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Jogador encontrado com sucesso&quot;,
-&nbsp;                content = { @Content(mediaType = &quot;application/json&quot;,
-&nbsp;                    schema = @Schema(implementation = Player.class))}),
-&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;O jogador não está cadastrado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
-&nbsp;    })
-&nbsp;    ResponseEntity&lt;Player&gt; findPlayer(@PathVariable String player) throws DataNotFoundException;
-&nbsp;
-&nbsp;    @Operation(summary = &quot;Exclui um jogador pelo seu id&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
-&nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Jogador excluído com sucesso&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;O jogador não está cadastrado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;O jogador está registrado no jogo atual&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
-&nbsp;    })
-&nbsp;    void deletePlayer(@PathVariable Long playerId) throws DataConflictException, DataNotFoundException;
+&nbsp;    ResponseEntity&lt;AuthResponse&gt; authenticateUser(@RequestBody LoginDto dto);
 &nbsp;
 &nbsp;}
 </code>
@@ -123,7 +85,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-05-15 03:52</div>
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
 </div>
 </body>
 </html>

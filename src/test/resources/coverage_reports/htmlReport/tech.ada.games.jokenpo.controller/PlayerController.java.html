@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'jokenpo' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">tech.ada.games.jokenpo.controller</a> &gt; <span class="el_source">PlayerController.java</span></div><h1>PlayerController.java</h1><pre class="source lang-java linenums">package tech.ada.games.jokenpo.controller;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import tech.ada.games.jokenpo.dto.PlayerDto;
+import tech.ada.games.jokenpo.exception.DataConflictException;
+import tech.ada.games.jokenpo.exception.DataNotFoundException;
+import tech.ada.games.jokenpo.model.Player;
+import tech.ada.games.jokenpo.service.PlayerService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/v1/jokenpo/player&quot;)
+public class PlayerController implements PlayerControllerDocs {
+
+    private final PlayerService playerService;
+
+<span class="fc" id="L20">    public PlayerController(PlayerService playerService) {</span>
+<span class="fc" id="L21">        this.playerService = playerService;</span>
+<span class="fc" id="L22">    }</span>
+
+    @PostMapping(&quot;/create&quot;)
+    public ResponseEntity&lt;Void&gt; createPlayer(@RequestBody PlayerDto player) throws DataConflictException {
+<span class="fc" id="L26">        playerService.createPlayer(player);</span>
+<span class="fc" id="L27">        return new ResponseEntity&lt;&gt;(HttpStatus.CREATED);</span>
+    }
+
+    @GetMapping(&quot;&quot;)
+    public ResponseEntity&lt;List&lt;Player&gt;&gt; findPlayers() throws DataNotFoundException {
+<span class="fc" id="L32">        return new ResponseEntity&lt;&gt;(playerService.findPlayers(), HttpStatus.OK);</span>
+    }
+
+    @GetMapping(&quot;/{player}&quot;)
+    public ResponseEntity&lt;Player&gt; findPlayer(@PathVariable String player) throws DataNotFoundException {
+<span class="fc" id="L37">        return new ResponseEntity&lt;&gt;(playerService.findByPlayer(player), HttpStatus.OK);</span>
+    }
+
+    @DeleteMapping(&quot;/{playerId}&quot;)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePlayer(@PathVariable Long playerId) throws DataConflictException, DataNotFoundException {
+<span class="fc" id="L43">        playerService.deletePlayer(playerId);</span>
+<span class="fc" id="L44">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

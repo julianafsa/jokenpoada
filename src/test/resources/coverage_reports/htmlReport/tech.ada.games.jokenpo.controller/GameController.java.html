@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'jokenpo' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">tech.ada.games.jokenpo.controller</a> &gt; <span class="el_source">GameController.java</span></div><h1>GameController.java</h1><pre class="source lang-java linenums">package tech.ada.games.jokenpo.controller;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import tech.ada.games.jokenpo.dto.GameDto;
+import tech.ada.games.jokenpo.dto.GameMoveDto;
+import tech.ada.games.jokenpo.dto.RankingDto;
+import tech.ada.games.jokenpo.dto.ResultDto;
+import tech.ada.games.jokenpo.model.Game;
+import tech.ada.games.jokenpo.exception.BadRequestException;
+import tech.ada.games.jokenpo.exception.DataConflictException;
+import tech.ada.games.jokenpo.exception.DataNotFoundException;
+import tech.ada.games.jokenpo.service.GameService;
+
+import java.util.List;
+import java.util.Objects;
+
+@RestController
+@RequestMapping(&quot;/api/v1/jokenpo/game&quot;)
+public class GameController implements GameControllerDocs {
+
+    private final GameService gameService;
+
+<span class="fc" id="L25">    public GameController(GameService gameService) {</span>
+<span class="fc" id="L26">        this.gameService = gameService;</span>
+<span class="fc" id="L27">    }</span>
+
+    @PostMapping(&quot;/new&quot;)
+    public ResponseEntity&lt;Void&gt; newGame(@RequestBody GameDto gameDto) throws BadRequestException,
+            DataNotFoundException {
+<span class="fc" id="L32">        gameService.newGame(gameDto);</span>
+<span class="fc" id="L33">        return new ResponseEntity&lt;&gt;(HttpStatus.CREATED);</span>
+    }
+
+    @PostMapping(&quot;/move&quot;)
+    public ResponseEntity&lt;ResultDto&gt; insertPlayerMove(@RequestBody GameMoveDto gameMove) throws BadRequestException,
+            DataNotFoundException, DataConflictException {
+<span class="fc" id="L39">        return new ResponseEntity&lt;&gt;(gameService.insertPlayerMove(gameMove), HttpStatus.OK);</span>
+    }
+
+    @GetMapping(&quot;&quot;)
+    public ResponseEntity&lt;List&lt;Game&gt;&gt; findGames() {
+<span class="fc" id="L44">        final List&lt;Game&gt; games = gameService.findGames();</span>
+<span class="pc bpc" id="L45" title="1 of 4 branches missed.">        if (Objects.nonNull(games) &amp;&amp; !games.isEmpty()) {</span>
+<span class="fc" id="L46">            return new ResponseEntity&lt;&gt;(games, HttpStatus.OK);</span>
+        }
+<span class="fc" id="L48">        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();</span>
+
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Game&gt; findGame(@PathVariable Long id) throws DataNotFoundException {
+<span class="fc" id="L54">        return new ResponseEntity&lt;&gt;(gameService.findGameById(id), HttpStatus.OK);</span>
+    }
+
+    @GetMapping(&quot;/ranking&quot;)
+    public ResponseEntity&lt;List&lt;RankingDto&gt;&gt; getRanking() {
+<span class="fc" id="L59">        final List&lt;RankingDto&gt; list = gameService.getRanking();</span>
+        //if (Objects.nonNull(list) &amp;&amp; !list.isEmpty()) {
+<span class="fc" id="L61">            return new ResponseEntity&lt;&gt;(list, HttpStatus.OK);</span>
+        //}
+        //return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

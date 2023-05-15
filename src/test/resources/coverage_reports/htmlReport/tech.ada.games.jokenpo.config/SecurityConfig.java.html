@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'jokenpo' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">tech.ada.games.jokenpo.config</a> &gt; <span class="el_source">SecurityConfig.java</span></div><h1>SecurityConfig.java</h1><pre class="source lang-java linenums">package tech.ada.games.jokenpo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import tech.ada.games.jokenpo.security.JwtAuthenticationEntryPoint;
+import tech.ada.games.jokenpo.security.JwtAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfig {
+
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthenticationFilter authenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationEntryPoint authenticationEntryPoint,
+<span class="fc" id="L29">                                 JwtAuthenticationFilter authenticationFilter) {</span>
+<span class="fc" id="L30">        this.authenticationEntryPoint = authenticationEntryPoint;</span>
+<span class="fc" id="L31">        this.authenticationFilter = authenticationFilter;</span>
+<span class="fc" id="L32">    }</span>
+
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+<span class="fc" id="L36">        return new BCryptPasswordEncoder();</span>
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+<span class="fc" id="L41">        return configuration.getAuthenticationManager();</span>
+    }
+
+    @Bean
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+<span class="fc" id="L46">        http</span>
+<span class="fc" id="L47">                .cors().and().csrf().disable().headers().frameOptions().disable().and()</span>
+<span class="fc" id="L48">                .headers().frameOptions().sameOrigin().and()</span>
+<span class="fc" id="L49">                .authorizeHttpRequests((auth) -&gt; auth</span>
+<span class="fc" id="L50">                        .requestMatchers(&quot;/api/v1/jokenpo/login&quot;).permitAll()</span>
+<span class="fc" id="L51">                        .requestMatchers(&quot;/api/v1/jokenpo/player/create&quot;).permitAll()</span>
+<span class="fc" id="L52">                        .requestMatchers(&quot;/v3/api-docs/**&quot;).permitAll()</span>
+<span class="fc" id="L53">                        .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
+<span class="fc" id="L54">                        .requestMatchers(&quot;/swagger-resources/**&quot;).permitAll()</span>
+<span class="fc" id="L55">                        .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
+                        //.anyRequest().permitAll()
+<span class="fc" id="L57">                        .anyRequest().authenticated()</span>
+<span class="fc" id="L58">                ).exceptionHandling(exception -&gt; exception</span>
+<span class="fc" id="L59">                        .authenticationEntryPoint(authenticationEntryPoint)</span>
+<span class="fc" id="L60">                ).sessionManagement(session -&gt; session</span>
+<span class="fc" id="L61">                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)</span>
+                );
+<span class="fc" id="L63">        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);</span>
+<span class="fc" id="L64">        return http.build();</span>
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+<span class="fc" id="L69">        return new WebMvcConfigurer() {</span>
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+<span class="fc" id="L72">                registry.addMapping(&quot;/**&quot;).allowedOrigins(&quot;*&quot;);</span>
+<span class="fc" id="L73">            }</span>
+        };
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

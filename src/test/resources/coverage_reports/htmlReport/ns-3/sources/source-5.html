@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > GameControllerDocs</title>
+  <title>Coverage Report > MoveControllerDocs</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,14 +21,14 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">tech.ada.games.jokenpo.controller</a>
 </div>
 
-<h1>Coverage Summary for Class: GameControllerDocs (tech.ada.games.jokenpo.controller)</h1>
+<h1>Coverage Summary for Class: MoveControllerDocs (tech.ada.games.jokenpo.controller)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">GameControllerDocs</td>
+  <td class="name">MoveControllerDocs</td>
 </tr>
 
 </table>
@@ -49,64 +49,47 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import org.springframework.http.ResponseEntity;
 &nbsp;import org.springframework.web.bind.annotation.PathVariable;
 &nbsp;import org.springframework.web.bind.annotation.RequestBody;
-&nbsp;import tech.ada.games.jokenpo.dto.GameDto;
-&nbsp;import tech.ada.games.jokenpo.dto.GameMoveDto;
-&nbsp;import tech.ada.games.jokenpo.dto.ResultDto;
-&nbsp;import tech.ada.games.jokenpo.model.Game;
+&nbsp;import tech.ada.games.jokenpo.dto.MoveDto;
 &nbsp;import tech.ada.games.jokenpo.exception.BadRequestException;
 &nbsp;import tech.ada.games.jokenpo.exception.DataConflictException;
 &nbsp;import tech.ada.games.jokenpo.exception.DataNotFoundException;
+&nbsp;import tech.ada.games.jokenpo.model.Move;
 &nbsp;
 &nbsp;import java.util.List;
 &nbsp;
-&nbsp;public interface GameControllerDocs {
+&nbsp;public interface MoveControllerDocs {
 &nbsp;
-&nbsp;    @Operation(summary = &quot;Registro de um novo jogo&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
+&nbsp;    @Operation(summary = &quot;Registro de uma nova jogada&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
 &nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Jogo iniciado com sucesso!&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;O jogo possui menos que dois jogadores!&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Jogada criada com sucesso&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Você pode cadastrar apenas os movimentos Spock, Tesoura, Papel, Pedra e Lagarto&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;O jogador não está cadastrado!&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;A jogada já está cadastrada&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
 &nbsp;    })
-&nbsp;    ResponseEntity&lt;Void&gt; newGame(@RequestBody GameDto gameDto) throws BadRequestException,
-&nbsp;            DataNotFoundException;
+&nbsp;    ResponseEntity&lt;Void&gt; createMove(@RequestBody MoveDto move) throws DataConflictException, BadRequestException;
 &nbsp;
-&nbsp;    @Operation(summary = &quot;Registro de uma jogada do jogador logado&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
+&nbsp;    @Operation(summary = &quot;Retorna uma lista de jogadas cadastradas&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
 &nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Jogada realizada! Caso todos os jogadores da partida tenham &quot; +
-&nbsp;                    &quot;realizado suas jogadas, a partida encerra com o resultado final!&quot;,
-&nbsp;                    content = { @Content(mediaType = &quot;application/json&quot;,
-&nbsp;                            schema = @Schema(implementation = ResultDto.class))}),
-&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;O jogo já foi finalizado!&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;O jogador ou a jogada não estão cadastrados&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Jogador já realizou a sua jogada!&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
-&nbsp;    })
-&nbsp;    ResponseEntity&lt;ResultDto&gt; insertPlayerMove(@RequestBody GameMoveDto gameMove) throws BadRequestException,
-&nbsp;            DataNotFoundException, DataConflictException;
-&nbsp;
-&nbsp;    @Operation(summary = &quot;Retorna uma lista de jogos cadastrados&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
-&nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de jogos cadastrados&quot;,
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de jogadas cadastradas&quot;,
 &nbsp;                content = { @Content(mediaType = &quot;application/json&quot;,
 &nbsp;                    schema = @Schema(implementation = List.class))}),
 &nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Não há jogadas cadastradas&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
 &nbsp;    })
-&nbsp;    ResponseEntity&lt;List&lt;Game&gt;&gt; findGames();
+&nbsp;    ResponseEntity&lt;List&lt;Move&gt;&gt; findMoves() throws DataNotFoundException;
 &nbsp;
-&nbsp;    @Operation(summary = &quot;Retorna um jogo registrada pelo id&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
+&nbsp;    @Operation(summary = &quot;Retorna uma jogada registrada pelo nome&quot;, security = @SecurityRequirement(name = &quot;bearerAuth&quot;))
 &nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Jogo encontrado com sucesso&quot;,
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Jogada encontrada com sucesso&quot;,
 &nbsp;                content = { @Content(mediaType = &quot;application/json&quot;,
-&nbsp;                    schema = @Schema(implementation = Game.class))}),
+&nbsp;                    schema = @Schema(implementation = Move.class))}),
 &nbsp;            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Jogador não logado&quot;, content = @Content),
-&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Este jogo não está cadastrado&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;A jogada não está cadastrada&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;, content = @Content)
 &nbsp;    })
-&nbsp;    ResponseEntity&lt;Game&gt; findGame(@PathVariable Long id) throws DataNotFoundException;
+&nbsp;    ResponseEntity&lt;Move&gt; findMove(@PathVariable String move) throws DataNotFoundException;
 &nbsp;
 &nbsp;}
 </code>
@@ -132,7 +115,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-05-15 03:52</div>
+    <div style="float:right;">generated on 2023-05-15 11:22</div>
 </div>
 </body>
 </html>

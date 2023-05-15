@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'jokenpo' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">tech.ada.games.jokenpo.service</a> &gt; <span class="el_source">PlayerService.java</span></div><h1>PlayerService.java</h1><pre class="source lang-java linenums">package tech.ada.games.jokenpo.service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import tech.ada.games.jokenpo.dto.PlayerDto;
+import tech.ada.games.jokenpo.exception.DataConflictException;
+import tech.ada.games.jokenpo.exception.DataNotFoundException;
+import tech.ada.games.jokenpo.model.Player;
+import tech.ada.games.jokenpo.model.Role;
+import tech.ada.games.jokenpo.repository.PlayerMoveRepository;
+import tech.ada.games.jokenpo.repository.PlayerRepository;
+import tech.ada.games.jokenpo.repository.RoleRepository;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@Service
+<span class="fc" id="L20">@Slf4j</span>
+public class PlayerService {
+
+    private final PlayerRepository playerRepository;
+    private final RoleRepository roleRepository;
+    private final PlayerMoveRepository playerMoveRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public PlayerService(PlayerRepository playerRepository, RoleRepository roleRepository,
+<span class="fc" id="L29">                         PlayerMoveRepository playerMoveRepository, PasswordEncoder passwordEncoder) {</span>
+<span class="fc" id="L30">        this.playerRepository = playerRepository;</span>
+<span class="fc" id="L31">        this.roleRepository = roleRepository;</span>
+<span class="fc" id="L32">        this.playerMoveRepository = playerMoveRepository;</span>
+<span class="fc" id="L33">        this.passwordEncoder = passwordEncoder;</span>
+<span class="fc" id="L34">    }</span>
+
+
+    public void createPlayer(PlayerDto playerDto) throws DataConflictException {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (playerRepository.existsByUsername(playerDto.getUsername()))</span>
+<span class="fc" id="L39">            throw new DataConflictException(&quot;O jogador já está cadastrado!&quot;);</span>
+
+<span class="fc" id="L41">        Player player = new Player();</span>
+<span class="fc" id="L42">        player.setName(playerDto.getName());</span>
+<span class="fc" id="L43">        player.setUsername(playerDto.getUsername());</span>
+<span class="fc" id="L44">        player.setPassword(passwordEncoder.encode(playerDto.getPassword()));</span>
+
+<span class="fc" id="L46">        Set&lt;Role&gt; roles = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L47">        Role role = roleRepository.findByName(&quot;ROLE_USER&quot;).get();</span>
+<span class="fc" id="L48">        roles.add(role);</span>
+<span class="fc" id="L49">        player.setRoles(roles);</span>
+<span class="fc" id="L50">        playerRepository.save(player);</span>
+<span class="fc" id="L51">        log.info(&quot;Jogador registrado com sucesso!&quot;);</span>
+<span class="fc" id="L52">    }</span>
+
+    public List&lt;Player&gt; findPlayers() throws DataNotFoundException {
+<span class="fc" id="L55">        List&lt;Player&gt; players = playerRepository.findAll();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (players.isEmpty())</span>
+<span class="fc" id="L57">            throw new DataNotFoundException(&quot;Não há jogadores cadastrados!&quot;);</span>
+<span class="fc" id="L58">        return players;</span>
+    }
+
+    public Player findByPlayer(String player) throws DataNotFoundException {
+<span class="fc" id="L62">        return playerRepository.findByUsername(player).orElseThrow(() -&gt; new DataNotFoundException(&quot;O jogador não está cadastrado!&quot;));</span>
+    }
+
+    public void deletePlayer(Long id) throws DataNotFoundException, DataConflictException {
+<span class="fc" id="L66">        Player p = playerRepository.findById(id).orElseThrow(() -&gt; new DataNotFoundException(&quot;O jogador não está cadastrado!&quot;));</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (playerMoveRepository.countByUnfinishedGameAndPlayer(id) &gt; 0) {</span>
+<span class="fc" id="L68">            throw new DataConflictException(&quot;O jogador está registrado em uma partida não finalizada!&quot;);</span>
+        }
+<span class="fc" id="L70">        playerRepository.delete(p);</span>
+<span class="fc" id="L71">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
