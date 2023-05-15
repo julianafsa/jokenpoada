@@ -33,40 +33,19 @@ class GameControllerTest extends AbstractBaseTest {
     private final String baseUri = "/api/v1/jokenpo/game";
     private AuthResponse authResponse;
 
-//    @Autowired
-//    private DataSource dataSource; // application.properties
-
-//    @Autowired
-//    private WebApplicationContext context;
-
     @BeforeEach
     void setup() {
-//        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-//        populator.setContinueOnError(false);
-//        populator.addScript(new ClassPathResource("import.sql"));
-//        ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-//                context.getResource("classpath:/import.sql"));
-//        DatabasePopulatorUtils.execute(populator, dataSource);
         this.populateDatabase();
     }
 
-//    @AfterEach
-//    void finish() {
-//        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-//        populator.setContinueOnError(false);
-//        populator.addScript(new ClassPathResource("drop_database.sql"));
-//        DatabasePopulatorUtils.execute(populator, dataSource);
-        // ddl-auto= create-drop" means that when the server is run,
-        // the database(table) instance is created. And whenever the server stops,
-        // the database table instance is droped.
-//    }
-
     @Test
     void newGameTest() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = Arrays.asList(1L, 2L);
         final GameDto gameDto = this.buildGameDto(playersIds);
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri + "/new")
                                 .content(asJsonString(gameDto))
@@ -75,15 +54,18 @@ class GameControllerTest extends AbstractBaseTest {
                         .andDo(print())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
     }
 
     @Test
     void newGameNumberOfPlayersGreaterThan2Test() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = Arrays.asList(1L, 2L, 3L);
         final GameDto gameDto = this.buildGameDto(playersIds);
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri + "/new")
                                 .content(asJsonString(gameDto))
@@ -92,15 +74,18 @@ class GameControllerTest extends AbstractBaseTest {
                         .andDo(print())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
     }
 
     @Test
     void newGameNumberOfPlayersLessThan2Test() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = List.of(1L);
         final GameDto gameDto = this.buildGameDto(playersIds);
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri + "/new")
                                 .content(asJsonString(gameDto))
@@ -109,15 +94,18 @@ class GameControllerTest extends AbstractBaseTest {
                         .andDo(print())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
 
     @Test
     void newGamePlayerNotFoundedTest() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = Arrays.asList(1L, 10L); // Player with id 10L does not exist.
         final GameDto gameDto = this.buildGameDto(playersIds);
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri + "/new")
                                 .content(asJsonString(gameDto))
@@ -126,14 +114,17 @@ class GameControllerTest extends AbstractBaseTest {
                         .andDo(print())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
     }
 
     @Test
     void newGameWithoutAuthorizationHeaderTest() throws Exception {
+        // Given
         List<Long> playersIds = Arrays.asList(1L, 2L);
         final GameDto gameDto = this.buildGameDto(playersIds);
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri + "/new")
                                 .content(asJsonString(gameDto))
@@ -141,11 +132,13 @@ class GameControllerTest extends AbstractBaseTest {
                         .andDo(print())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatus());
     }
 
     @Test
     void insertPlayerMoveTest() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
         this.buildMoves();
         List<Long> playersIds = Arrays.asList(1L, 2L);
@@ -153,6 +146,7 @@ class GameControllerTest extends AbstractBaseTest {
         this.createGame(gameDto);
         final GameMoveDto gameMoveDto = this.buildGameMoveDto(1L, 1L);
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri + "/move")
                                 .content(asJsonString(gameMoveDto))
@@ -161,16 +155,19 @@ class GameControllerTest extends AbstractBaseTest {
                         .andReturn().getResponse();
         final ResultDto resultDto = this.asResultDtoObject(response.getContentAsString());
 
+        // Then
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals("Jogada realizada! Faltam 1 jogadores para finalizar o jogo!", resultDto.getMessage());
     }
 
     @Test
     void insertPlayerMoveNotFoundTest() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
         this.buildMoves();
         final GameMoveDto gameMoveDto = this.buildGameMoveDto(1L, 1L); // Game with id 1L does not exist
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri + "/move")
                                 .content(asJsonString(gameMoveDto))
@@ -178,12 +175,13 @@ class GameControllerTest extends AbstractBaseTest {
                         //.andDo(print())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-        //assertEquals("Jogada realizada! Faltam 1 jogadores para finalizar o jogo!", resultDto.getMessage());
     }
 
     @Test
     void findGamesTest() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = Arrays.asList(1L, 2L);
         this.createGame(this.buildGameDto(playersIds));
@@ -192,6 +190,7 @@ class GameControllerTest extends AbstractBaseTest {
         this.buildGameDto(playersIds);
         this.createGame(this.buildGameDto(playersIds));
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(get(baseUri)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -200,6 +199,7 @@ class GameControllerTest extends AbstractBaseTest {
                         .andReturn().getResponse();
         final List<Game> games = this.asGameListObject(response.getContentAsString());
 
+        // Then
         assertEquals(2, games.size());
         assertEquals(Boolean.FALSE, games.get(0).getFinished());
         assertEquals(Boolean.FALSE, games.get(1).getFinished());
@@ -208,8 +208,10 @@ class GameControllerTest extends AbstractBaseTest {
 
     @Test
     void findGamesNoContentTest() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(get(baseUri)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -217,22 +219,26 @@ class GameControllerTest extends AbstractBaseTest {
                         .andDo(print())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
     }
 
     @Test
     void findGameTest() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
         this.createGame(this.buildGameDto(Arrays.asList(1L, 2L)));
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(get(baseUri + "/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", authResponse.getAccessToken()))
                         .andDo(print())
                         .andReturn().getResponse();
-
         final Game game = this.asGameObject(response.getContentAsString());
+
+        // Then
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertNotNull(game);
         assertEquals(1, game.getId());
@@ -240,16 +246,19 @@ class GameControllerTest extends AbstractBaseTest {
 
     @Test
     void findGameNotFoundTest() throws Exception {
+        // Given
         this.authResponse = this.loginAsF1rstPlayer();
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(get(baseUri + "/1000") // Game with id 1000 does not exist.
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", authResponse.getAccessToken()))
                         .andDo(print())
                         .andReturn().getResponse();
-
         final String responseAsString = response.getContentAsString();
+
+        // Then
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
         assertEquals("", responseAsString);
     }
@@ -275,24 +284,5 @@ class GameControllerTest extends AbstractBaseTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(numberOfPlayers, rankingResponse.size());
     }
-
-//    @Test
-//    void getRankingTestNoContent() throws Exception {
-//        // Given
-//        this.authResponse = this.loginAsF1rstPlayer();
-//        final List<Game> expectedGame = this.createGames(5);
-//
-//        // When
-//        final MockHttpServletResponse response =
-//                mvc.perform(get(baseUri + "/ranking")
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .header("Authorization", authResponse.getAccessToken()))
-//                        .andDo(print())
-//                        .andReturn().getResponse();
-//
-//        // Then
-//        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
-//    }
-
 
 }

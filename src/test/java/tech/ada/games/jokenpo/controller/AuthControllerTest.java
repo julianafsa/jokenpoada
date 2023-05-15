@@ -20,17 +20,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class AuthControllerTest extends BasePlayerTest {
+class AuthControllerTest extends AbstractBaseTest {
 
     private final String baseUri = "/api/v1/jokenpo/login";
 
     @Test
     void authenticateUserTest() throws Exception {
+        // Given
         final String username = "username";
         final String password = "password";
         createPlayerIfNotExists(username, password);
         final LoginDto loginDto = this.buildLoginDto(username, password);
 
+        // When
         final String responseAsString =
                 mvc.perform(post(baseUri)
                                 .content(asJsonString(loginDto))
@@ -38,19 +40,22 @@ class AuthControllerTest extends BasePlayerTest {
                         .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString();
-
         final AuthResponse response =
                 new ObjectMapper().convertValue(responseAsString, AuthResponse.class);
+
+        // Then
         assertEquals("Bearer", response.getTokenType());
         assertNotNull(response.getAccessToken());
     }
 
     @Test
     void authenticateUserNotFoundTest() throws Exception {
+        // Given
         final String username = "usernotfound";
         final String password = "password";
         final LoginDto loginDto = this.buildLoginDto(username, password);
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri)
                                 .content(asJsonString(loginDto))
@@ -59,16 +64,19 @@ class AuthControllerTest extends BasePlayerTest {
                         .andExpect(status().is4xxClientError())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatus());
     }
 
     @Test
     void authenticateUserWithInvalidPassoword() throws Exception {
+        // Given
         final String username = "username";
         final String password = "password";
         createPlayerIfNotExists(username, password);
         final LoginDto loginDto = this.buildLoginDto(username, "invalidpassword");
 
+        // When
         final MockHttpServletResponse response =
                 mvc.perform(post(baseUri)
                                 .content(asJsonString(loginDto))
@@ -77,22 +85,8 @@ class AuthControllerTest extends BasePlayerTest {
                         .andExpect(status().is4xxClientError())
                         .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatus());
-    }
-
-    private LoginDto buildLoginDto(final String username, final String password) {
-        final LoginDto loginDto = new LoginDto();
-        loginDto.setUsername(username);
-        loginDto.setPassword(password);
-        return loginDto;
-    }
-
-    private String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

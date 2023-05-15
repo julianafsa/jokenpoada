@@ -56,6 +56,15 @@ abstract class AbstractServiceTest{
         return game;
     }
 
+    protected Game buildGame(final Player player, Boolean finished) {
+        final Game game = new Game();
+        game.setId(player.getId());
+        game.setCreator(player);
+        game.setFinished(finished);
+        game.setCreatedAt(LocalDateTime.now());
+        return game;
+    }
+
     protected GameMoveDto buildGameMoveDTO() {
         GameMoveDto gmDto = new GameMoveDto();
 
@@ -75,6 +84,11 @@ abstract class AbstractServiceTest{
         pMove.setGame(game);
         pMove.setPlayer(player);
         pMove.setId(id);
+        return pMove;
+    }
+    protected PlayerMove buildPlayerMove(Long id, Game game, Player player, Move move) {
+        PlayerMove pMove = this.buildPlayerMove(id, game, player);
+        pMove.setMove(move);
         return pMove;
     }
 

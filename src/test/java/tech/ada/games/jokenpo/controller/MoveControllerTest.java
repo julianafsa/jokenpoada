@@ -36,8 +36,10 @@ class MoveControllerTest extends AbstractBaseTest {
 
     @Test
     void createMoveTest() throws Exception {
+        // Given
         final MoveDto move = MoveDto.builder().move("JOGADA SPOCK").build();
 
+        // When
         final MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.post(baseUri)
                 .content(asJsonString(move))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -45,14 +47,17 @@ class MoveControllerTest extends AbstractBaseTest {
                 .andDo(print())
                 .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
     }
 
     @Test
     void createInvalidMoveTest() throws Exception {
+        // Given
         final MoveDto move = new MoveDto();
         move.setMove("JOGADA INVALIDA");
 
+        // When
         final MvcResult result = mvc.perform(MockMvcRequestBuilders.post(baseUri)
                         .content(asJsonString(move))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -61,52 +66,68 @@ class MoveControllerTest extends AbstractBaseTest {
                 .andExpect(status().is4xxClientError())
                 .andReturn();
 
+        // Then
         assertTrue(result.getResolvedException() instanceof BadRequestException);
         assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
     }
 
     @Test
     void findAllMovesTest() throws Exception {
+        // Given
         this.buildMoves();
+
+        // When
         final MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(baseUri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", authResponse.getAccessToken()))
                 .andDo(print())
                 .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertNotNull(response.getContentAsString());
     }
 
     @Test
     void findAllMovesNotFoundTest() throws Exception {
+        // Given
         this.executeScript("scripts/delete_moves.sql");
+
+        // When
         final MvcResult result = mvc.perform(MockMvcRequestBuilders.get(baseUri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", authResponse.getAccessToken()))
                 .andDo(print())
                 .andReturn();
 
+        // Then
         assertTrue(result.getResolvedException() instanceof DataNotFoundException);
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }
 
     @Test
     void findMovesByNameTest() throws Exception {
+        // Given
         this.buildMoves();
+
+        // When
         final MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(baseUri + "/Spock")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", authResponse.getAccessToken()))
                 .andDo(print())
                 .andReturn().getResponse();
 
+        // Then
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertNotNull(response.getContentAsString());
     }
 
     @Test
     void findMovesByNameNotFoundTest() throws Exception {
+        // Given
         final String invalidMove = "JOGADA INVALIDA";
+
+        // When
         final MvcResult result = mvc.perform(MockMvcRequestBuilders.get(
                 baseUri + "/" + invalidMove)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,6 +135,7 @@ class MoveControllerTest extends AbstractBaseTest {
                 .andDo(print())
                 .andReturn();
 
+        // Then
         assertTrue(result.getResolvedException() instanceof DataNotFoundException);
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }

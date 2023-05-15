@@ -194,6 +194,37 @@ abstract class AbstractBaseTest {
         return list;
     }
 
+    protected Optional<Player> createPlayerIfNotExists(final String username, final String password) {
+        try {
+            final Player player = playerService.findByPlayer(username);
+            return Optional.ofNullable(player);
+        } catch (DataNotFoundException exception) {
+            return this.createPlayer(username, password);
+        }
+    }
+
+    private Optional<Player> createPlayer(final String username, final String password) {
+        final PlayerDto playerDto = this.buildPlayerDto(username, password);
+        try {
+            playerService.createPlayer(playerDto);
+        } catch (DataConflictException exception) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.ofNullable(playerService.findByPlayer(playerDto.getUsername()));
+        } catch (DataNotFoundException e) {
+            return Optional.empty();
+        }
+    }
+
+    private PlayerDto buildPlayerDto(final String username, final String password) {
+        final PlayerDto playerDto = new PlayerDto();
+        playerDto.setUsername(username);
+        playerDto.setName(username + 1);
+        playerDto.setPassword(password);
+        return playerDto;
+    }
+
     // OBJECT MAPPER
     protected String asJsonString(final Object obj) {
         try {
