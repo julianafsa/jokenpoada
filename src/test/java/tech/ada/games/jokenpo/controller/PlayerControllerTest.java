@@ -53,7 +53,7 @@ class PlayerControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void createPlayerAlreadyCreatedTest() throws Exception {
+    void createPlayerWithAlreadyCreatedPlayerShouldThrowsDataConflitExceptionTest() throws Exception {
         // Given
         PlayerDto playerDto = PlayerDto.builder()
                 .name("player1")
@@ -106,7 +106,7 @@ class PlayerControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void findPlayersByNameNotFoundTest() throws Exception {
+    void findPlayersByNameWihtInvalidPlayerShouldThrowsDataNotFoundExceptionTest() throws Exception {
         // Given
         final String invalidUsername = "InvalidUsername";
 
@@ -140,7 +140,7 @@ class PlayerControllerTest extends AbstractBaseTest {
      }
 
     @Test
-    void deletePlayerNotFoundTest() throws Exception {
+    void deletePlayerWithPlayerNotRegistredShouldThrowsDataNotFoundExceptionTest() throws Exception {
         // Given
         final String invalidId = "1000";
 
@@ -157,7 +157,7 @@ class PlayerControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void deletePlayerDataConflitExceptionTest() throws Exception {
+    void deletePlayerWithUnfinishedGameShouldThrowsDataConflitExceptionTest() throws Exception {
         // Given
         this.createGame(new GameDto(Arrays.asList(1L, 2L)));
 

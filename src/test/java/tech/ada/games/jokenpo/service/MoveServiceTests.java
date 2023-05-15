@@ -42,7 +42,7 @@ public class MoveServiceTests {
 	}
 	
 	@Test
-	void testCreateMoveDataConflictException(){
+	void testCreateMoveWithMoveAlreadyRegistredShouldThrowsDataConflictException(){
 		
 		MoveDto moveDto = new MoveDto("papel");
 		
@@ -54,7 +54,7 @@ public class MoveServiceTests {
 	}
 
 	@Test
-	void testCreateMoveBadRequestException(){
+	void testCreateMoveWithMoveNotAllowedShouldThrowsBadRequestException(){
 		
 		MoveDto moveDto = new MoveDto("Serrote");
 		
@@ -78,7 +78,7 @@ public class MoveServiceTests {
 
     
 	@Test
-	void testFindMovesDataNotFoundException(){
+	void testFindMovesWithNoRegistredMovesShouldThrowsDataNotFoundException(){
     	
     	when(moveRepository.findAll()).thenReturn(Collections.emptyList());
     	
@@ -103,7 +103,7 @@ public class MoveServiceTests {
     }
 	
 	@Test
-	void testFindByMoveDataNotFoundException(){
+	void testFindByMoveSearchingInvalidMoveShouldThrowsDataNotFoundException(){
     	
 		String moveName = "serrote";
     	when(moveRepository.findByMove(moveName)).thenReturn(Optional.ofNullable(null));

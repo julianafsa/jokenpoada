@@ -48,7 +48,7 @@ public class SecurityUtilsTest {
     }
 
     @Test
-    public void getCurrentUserLogin_withNullAuthentication_shouldReturnNull() {
+    public void getCurrentUserLoginWithNullAuthenticationShouldReturnNull() {
         // Given
         SecurityContextHolder.clearContext();
 

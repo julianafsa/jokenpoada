@@ -54,7 +54,7 @@ class PlayerServiceTests {
 	}
 	
 	@Test
-	void testCreatePlayerDataConflictException(){
+	void testCreatePlayerWithPlayerAlreadyRegistredShouldThrowsDataConflictException(){
 		
 		PlayerDto player = new PlayerDto("adaTest","password","ada");
 		
@@ -102,7 +102,7 @@ class PlayerServiceTests {
     }
 	
 	@Test
-	void testFindByPlayerDataNotFoundException(){
+	void testFindByPlayerWithNotRegistredPlayerShouldThrowsDataNotFoundException(){
     	
 		String playerName = "name";
     	when(playerRepository.findByUsername(playerName)).thenReturn(Optional.ofNullable(null));
@@ -133,7 +133,7 @@ class PlayerServiceTests {
     }
 	
 	@Test
-	void testDeletePlayerDataNotFoundException(){
+	void testDeletePlayerWithNotRegistredPlayerShouldThrowsDataNotFoundException(){
     	
 		Long playerID = 321l;
 		

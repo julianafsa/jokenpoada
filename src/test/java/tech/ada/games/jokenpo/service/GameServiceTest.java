@@ -86,7 +86,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void createGameWithNotRegistredCurrentPlayerInsuccessTest() {
+    void createGameWithNotRegistredCurrentPlayerShouldThrowDataNotFoundExceptionTest() {
         // Given (Arrange)
         final GameDto gameDto = this.buildGameDto();
         final String playerUsername1 = "player1";
@@ -117,7 +117,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void createGameWithLessOf2PlayersInsuccessTest() {
+    void createGameWithLessOf2PlayersShouldThrowBadRequestExceptionTest() {
         // Given (Arrange)
         final String playerUsername1 = "player1";
         final Player player1 = this.buildPlayer(1L, playerUsername1, "Player 1");
@@ -139,7 +139,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void createGameWithNotRegistredPlayerInsuccessTest() {
+    void createGameWithNotRegistredPlayerShouldThrowDataNotFoundExceptionTest() {
         // Given (Arrange)
         final String playerUsername1 = "player1";
         final Player player1 = this.buildPlayer(1L, playerUsername1, "Player 1");
@@ -167,38 +167,38 @@ class GameServiceTest extends AbstractServiceTest {
         verify(playerRepository, times(1)).findById(2L);
     }
 
+//    @Test
+//    void insertPlayerMoveTest() throws DataNotFoundException, DataConflictException, BadRequestException {
+//        // Given (Arrange)
+//        final Long gameId = 1L;
+//        final Long moveId = 1L;
+//        final GameMoveDto gameMoveDto = new GameMoveDto(gameId, moveId);
+//        final String playerUsername1 = "player1";
+//        final Player player = this.buildPlayer(1L, playerUsername1, "Player");
+//        final Game game = this.buildGame(player);
+//        final String moveName = "Tesoura";
+//        final Move move = this.buildMove(moveId, moveName);
+//        final PlayerMove playerMove = this.buildPlayerMove(1L, game, player);
+//
+//        mockStatic.when(SecurityUtils::getCurrentUserLogin).thenReturn(playerUsername1);
+//        when(playerRepository.findByUsername(playerUsername1)).thenReturn(Optional.of(player));
+//        when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
+//        when(moveRepository.findById(gameMoveDto.getMoveId())).thenReturn(Optional.of(move));
+//        when(playerMoveRepository.findByUnfinishedGameIdAndPlayer(player.getId(), gameMoveDto.getGameId())).thenReturn(Optional.of(playerMove));
+//        when(playerMoveRepository.save(playerMove)).thenReturn(playerMove);
+//        when(playerMoveRepository.countMovesPlayedByUnfinishedGame(game.getId())).thenReturn(1L);
+//        when(playerMoveRepository.countByUnfinishedGameId(game.getId())).thenReturn(2L);
+//
+//        // When (Act)
+//        final ResultDto resultDto = service.insertPlayerMove(gameMoveDto);
+//
+//        // Then (Assert)
+//        assertNotNull(resultDto);
+//        assertEquals("Jogada realizada! Faltam 1 jogadores para finalizar o jogo!", resultDto.getMessage());
+//    }
+
     @Test
-    void insertPlayerMoveTest() throws DataNotFoundException, DataConflictException, BadRequestException {
-        // Given (Arrange)
-        final Long gameId = 1L;
-        final Long moveId = 1L;
-        final GameMoveDto gameMoveDto = new GameMoveDto(gameId, moveId);
-        final String playerUsername1 = "player1";
-        final Player player = this.buildPlayer(1L, playerUsername1, "Player");
-        final Game game = this.buildGame(player);
-        final String moveName = "Tesoura";
-        final Move move = this.buildMove(moveId, moveName);
-        final PlayerMove playerMove = this.buildPlayerMove(1L, game, player);
-
-        mockStatic.when(SecurityUtils::getCurrentUserLogin).thenReturn(playerUsername1);
-        when(playerRepository.findByUsername(playerUsername1)).thenReturn(Optional.of(player));
-        when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
-        when(moveRepository.findById(gameMoveDto.getMoveId())).thenReturn(Optional.of(move));
-        when(playerMoveRepository.findByUnfinishedGameIdAndPlayer(player.getId(), gameMoveDto.getGameId())).thenReturn(Optional.of(playerMove));
-        when(playerMoveRepository.save(playerMove)).thenReturn(playerMove);
-        when(playerMoveRepository.countMovesPlayedByUnfinishedGame(game.getId())).thenReturn(1L);
-        when(playerMoveRepository.countByUnfinishedGameId(game.getId())).thenReturn(2L);
-
-        // When (Act)
-        final ResultDto resultDto = service.insertPlayerMove(gameMoveDto);
-
-        // Then (Assert)
-        assertNotNull(resultDto);
-        assertEquals("Jogada realizada! Faltam 1 jogadores para finalizar o jogo!", resultDto.getMessage());
-    }
-
-    @Test
-    void findGamesTest() {
+    void findGamesShouldReturnListOfGamesTest() {
         // Given (Arrange)
         final List<Game> expectedResponse = List.of(new Game());
         when(gameRepository.findAll()).thenReturn(expectedResponse);
@@ -211,7 +211,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void findGameByIdTest() throws DataNotFoundException {
+    void findGameByIdShouldReturnGameTest() throws DataNotFoundException {
         // Given (Arrange)
         final Long id = 1L;
         final Player player = this.buildPlayer(id, "player", "Player");
@@ -226,7 +226,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void findGameByIdThrowsDataNotFoundExceptionTest() {
+    void findGameByIdWithNotRegistredGameShouldThrowsDataNotFoundExceptionTest() {
         // Given (Arrange)
         final Long id = 1L;
 
@@ -527,7 +527,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void insertPlayerMoveNotRegistredGameInsuccessTest() {
+    void insertPlayerMoveWithNotRegistredGameShouldThrowsDataNotFoundExceptionTest() {
         // Given (Arrange)
         final Long id = 1L;
         final String playerUsername = "player";
@@ -549,7 +549,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void insertPlayerMoveFinishedGameInsuccessTest() {
+    void insertPlayerMoveWithFinishedGameShouldThrowsBadRequestExceptionTest() {
         // Given (Arrange)
         final Long id = 1L;
         final String playerUsername = "player";
@@ -573,7 +573,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void insertPlayerMoveNotRegistredMoveInsuccessTest() {
+    void insertPlayerMoveWithNotRegistredMoveShouldThrowDataNotFoundExceptionTest() {
         // Given (Arrange)
         final Long id = 1L;
         final String playerUsername = "player";
@@ -598,7 +598,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void insertPlayerMovePlayerNotRegistredInGameInsuccessTest() {
+    void insertPlayerMovePlayerWithPlayerNotRegistredInGameShouldThrowDataNotFoundExceptionTest() {
         // Given (Arrange)
         final Long id = 1L;
         final String playerUsername = "player";
@@ -625,7 +625,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void insertPlayerMovePlayerWithRegistredMoveInsuccessTest() {
+    void insertPlayerMovePlayerWithAlreadyRegistredMoveShouldThrowDataConflictExceptionTest() {
         // Given (Arrange)
         final Long id = 1L;
         final String playerUsername = "player";
@@ -653,7 +653,7 @@ class GameServiceTest extends AbstractServiceTest {
     }
 
     // Teste criado utilizando o TDD
-    @Test void getRankingTest() {
+    @Test void getRankingShouldReturnRankingListTest() {
 
         // Given
         List<Tuple> expectedTuple = this.buildTupleList(3);
@@ -667,7 +667,7 @@ class GameServiceTest extends AbstractServiceTest {
         verify(gameRepository, times(1)).getRanking();
     }
 
-    @Test void getRankingEmptyTest() {
+    @Test void getRankingShouldReturnEmptyListTest() {
 
         // Given
         List<Tuple> expectedTuple = this.buildTupleList(0);

@@ -25,7 +25,7 @@ class AuthControllerTest extends AbstractBaseTest {
     private final String baseUri = "/api/v1/jokenpo/login";
 
     @Test
-    void authenticateUserTest() throws Exception {
+    void authenticateUserShouldReturnTokenTest() throws Exception {
         // Given
         final String username = "username";
         final String password = "password";
@@ -49,7 +49,7 @@ class AuthControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void authenticateUserNotFoundTest() throws Exception {
+    void authenticateUserNotRegistredShouldNotAuthenticateUserTest() throws Exception {
         // Given
         final String username = "usernotfound";
         final String password = "password";
@@ -69,7 +69,7 @@ class AuthControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void authenticateUserWithInvalidPassoword() throws Exception {
+    void authenticateUserWithInvalidPassowordShouldNotAuthenticateUserTest() throws Exception {
         // Given
         final String username = "username";
         final String password = "password";

@@ -52,7 +52,7 @@ class MoveControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void createInvalidMoveTest() throws Exception {
+    void createInvalidMoveShouldReturnsBadRequestExceptionTest() throws Exception {
         // Given
         final MoveDto move = new MoveDto();
         move.setMove("JOGADA INVALIDA");
@@ -89,7 +89,7 @@ class MoveControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void findAllMovesNotFoundTest() throws Exception {
+    void findAllMovesWithNotRegistredMovesShouldThrowsDataNotFoundExceptionTest() throws Exception {
         // Given
         this.executeScript("scripts/delete_moves.sql");
 
@@ -123,7 +123,7 @@ class MoveControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void findMovesByNameNotFoundTest() throws Exception {
+    void findMovesByNameWithInvalidMoveShouldReturnsDataNotFoundExceptionTest() throws Exception {
         // Given
         final String invalidMove = "JOGADA INVALIDA";
 

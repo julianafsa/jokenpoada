@@ -10,6 +10,7 @@ import tech.ada.games.jokenpo.response.AuthResponse;
 import tech.ada.games.jokenpo.security.JwtTokenProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class AuthServiceTest {
@@ -26,7 +27,7 @@ class AuthServiceTest {
     }
 
     @Test
-    void login() {
+    void loginShouldAuthenticateWithSucess() {
         // Given (Arrange)
         final LoginDto loginDto = this.buildLoginDto();
         final Authentication usernamePasswordAuthenticationToken =
@@ -48,12 +49,36 @@ class AuthServiceTest {
         verify(tokenProvider, times(1)).generateToken(authentication);
     }
 
+    @Test
+    void loginWithNotRegistredUserShouldThrowException() {
+        // Given (Arrange)
+        final LoginDto loginDto = this.buildInvalidLoginDto();
+        final Authentication usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
+        when(authenticationManager.authenticate(usernamePasswordAuthenticationToken))
+                .thenThrow(new RuntimeException("Invalid credentials"));
+
+        // When (Act)
+        assertThrows(RuntimeException.class, () -> service.login(loginDto));
+
+        // Then (Assert)
+        verify(authenticationManager, times(1)).authenticate(usernamePasswordAuthenticationToken);
+        verifyNoInteractions(tokenProvider);
+    }
+
     private LoginDto buildLoginDto() {
         final LoginDto loginDto = new LoginDto();
         loginDto.setUsername("username");
         loginDto.setPassword("password");
         return loginDto;
     }
+    private LoginDto buildInvalidLoginDto() {
+        final LoginDto loginDto = new LoginDto();
+        loginDto.setUsername("usernameInvalid");
+        loginDto.setPassword("passwordInvalid");
+        return loginDto;
+    }
+
 
     private String buildToken() {
         return "accessToken";

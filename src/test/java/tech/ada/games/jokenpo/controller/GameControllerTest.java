@@ -8,18 +8,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.MvcResult;
 import tech.ada.games.jokenpo.dto.GameDto;
 import tech.ada.games.jokenpo.dto.GameMoveDto;
 import tech.ada.games.jokenpo.dto.RankingDto;
 import tech.ada.games.jokenpo.dto.ResultDto;
+import tech.ada.games.jokenpo.exception.BadRequestException;
+import tech.ada.games.jokenpo.exception.DataNotFoundException;
 import tech.ada.games.jokenpo.model.Game;
 import tech.ada.games.jokenpo.response.AuthResponse;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,7 +41,7 @@ class GameControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void newGameTest() throws Exception {
+    void newGameWithTwoRegistredPlayersShouldCreateGameTest() throws Exception {
         // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = Arrays.asList(1L, 2L);
@@ -59,7 +61,7 @@ class GameControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void newGameNumberOfPlayersGreaterThan2Test() throws Exception {
+    void newGameNumberOfPlayersGreaterThan2ShouldCreatesGameTest() throws Exception {
         // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = Arrays.asList(1L, 2L, 3L);
@@ -79,47 +81,49 @@ class GameControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void newGameNumberOfPlayersLessThan2Test() throws Exception {
+    void newGameWithNumberOfPlayersLessThan2ShouldNotCreateGameAndShouldReturnsBadRequestStatus() throws Exception {
         // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = List.of(1L);
         final GameDto gameDto = this.buildGameDto(playersIds);
 
         // When
-        final MockHttpServletResponse response =
+        final MvcResult result =
                 mvc.perform(post(baseUri + "/new")
                                 .content(asJsonString(gameDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", authResponse.getAccessToken()))
                         .andDo(print())
-                        .andReturn().getResponse();
+                        .andReturn();
 
         // Then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+        assertTrue(result.getResolvedException() instanceof BadRequestException);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
     }
 
     @Test
-    void newGamePlayerNotFoundedTest() throws Exception {
+    void newGameWithPlayerNotFoundedShouldNotCreateGameAndShouldReturnsNotFoundStatusTest() throws Exception {
         // Given
         this.authResponse = this.loginAsF1rstPlayer();
         List<Long> playersIds = Arrays.asList(1L, 10L); // Player with id 10L does not exist.
         final GameDto gameDto = this.buildGameDto(playersIds);
 
         // When
-        final MockHttpServletResponse response =
+        final MvcResult result =
                 mvc.perform(post(baseUri + "/new")
                                 .content(asJsonString(gameDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", authResponse.getAccessToken()))
                         .andDo(print())
-                        .andReturn().getResponse();
+                        .andReturn();
 
         // Then
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        assertTrue(result.getResolvedException() instanceof DataNotFoundException);
+        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }
 
     @Test
-    void newGameWithoutAuthorizationHeaderTest() throws Exception {
+    void newGameWithoutAuthorizationHeaderShouldNotCreateGameAndShouldReturnsUnauthorizedStatusTest() throws Exception {
         // Given
         List<Long> playersIds = Arrays.asList(1L, 2L);
         final GameDto gameDto = this.buildGameDto(playersIds);
@@ -161,22 +165,23 @@ class GameControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void insertPlayerMoveNotFoundTest() throws Exception {
+    void insertPlayerMoveWithGameNotRegistredShouldNotInsertMoveAndReturnNotFoundStatusTest() throws Exception {
         // Given
         this.authResponse = this.loginAsF1rstPlayer();
         this.buildMoves();
         final GameMoveDto gameMoveDto = this.buildGameMoveDto(1L, 1L); // Game with id 1L does not exist
 
         // When
-        final MockHttpServletResponse response =
+        final MvcResult result =
                 mvc.perform(post(baseUri + "/move")
                                 .content(asJsonString(gameMoveDto))
                                 .contentType(MediaType.APPLICATION_JSON))
                         //.andDo(print())
-                        .andReturn().getResponse();
+                        .andReturn();
 
         // Then
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        assertTrue(result.getResolvedException() instanceof DataNotFoundException);
+        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }
 
     @Test
@@ -207,7 +212,7 @@ class GameControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void findGamesNoContentTest() throws Exception {
+    void findGamesWithNotRegistredGamesShouldReturnNoContentStatusTest() throws Exception {
         // Given
         this.authResponse = this.loginAsF1rstPlayer();
 
@@ -224,7 +229,7 @@ class GameControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void findGameTest() throws Exception {
+    void findGameByIdTest() throws Exception {
         // Given
         this.authResponse = this.loginAsF1rstPlayer();
         this.createGame(this.buildGameDto(Arrays.asList(1L, 2L)));
@@ -245,21 +250,22 @@ class GameControllerTest extends AbstractBaseTest {
     }
 
     @Test
-    void findGameNotFoundTest() throws Exception {
+    void findGameByIdWithGameNotRegistredShouldReturnsNotFoundStatusTest() throws Exception {
         // Given
         this.authResponse = this.loginAsF1rstPlayer();
 
         // When
-        final MockHttpServletResponse response =
+        final MvcResult result =
                 mvc.perform(get(baseUri + "/1000") // Game with id 1000 does not exist.
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", authResponse.getAccessToken()))
                         .andDo(print())
-                        .andReturn().getResponse();
-        final String responseAsString = response.getContentAsString();
+                        .andReturn();
+        final String responseAsString = result.getResponse().getContentAsString();
 
         // Then
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        assertTrue(result.getResolvedException() instanceof DataNotFoundException);
+        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
         assertEquals("", responseAsString);
     }
 
